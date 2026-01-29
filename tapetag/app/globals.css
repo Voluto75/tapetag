@@ -1,0 +1,547 @@
+@import "tailwindcss";
+
+/* =========================
+   FONTS
+   ========================= */
+@font-face {
+  font-family: "GAU Cube";
+  src: url("/fonts/GAU_cube_B.TTF") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* (Optionnel) si tu as aussi GAU_cube_R.TTF :
+@font-face {
+  font-family: "GAU Cube";
+  src: url("/fonts/GAU_cube_R.TTF") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
+/* =========================
+   THEME — Win98 x Kawaii x Asian Futuriste
+   ========================= */
+:root {
+  /* Base */
+  --bg: #0b0f14;           /* noir bleuté "console" */
+  --ink: #e6e1ff;          /* blanc lilas */
+  --muted: rgba(230, 225, 255, 0.72);
+
+  /* Barbie / Kawaii */
+  --barbie: #ff2f92;
+  --barbie-soft: #ff6fb7;
+
+  /* Futuriste */
+  --cyan: #7ad7ff;
+  --mint: #8cffb5;
+  --violet: #c6a7ff;
+  --lilac: #cbb6ff;
+
+  /* Win98 window */
+  --win-face: #f6f0ff;     /* surface fenêtre pastel */
+  --win-face-2: #e9e2ff;   /* profondeur */
+  --win-ink: #161616;      /* texte sur window */
+  --win-hi: #ffffff;       /* highlight */
+  --win-mid: #a7a2b3;      /* mid */
+  --win-lo: #2b2b2b;       /* shadow */
+
+  /* Radii / Shadows */
+  --r-lg: 12px;
+  --r-md: 10px;
+  --r-sm: 8px;
+
+  --shadow-deep: 0 18px 60px rgba(0, 0, 0, 0.55);
+  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.35);
+
+  /* Borders */
+  --border-glow: rgba(198, 167, 255, 0.28);
+  --border-dim: rgba(255, 255, 255, 0.08);
+
+  /* Scanline / Noise intensity */
+  --scan: 0.06;
+  --grain: 0.10;
+}
+
+/* =========================
+   GLOBAL RESET
+   ========================= */
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, Arial, Helvetica, sans-serif;
+  line-height: 1.45;
+}
+
+/* Links */
+a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--barbie);
+  text-decoration: underline;
+}
+
+/* Selection */
+::selection {
+  background: rgba(255, 47, 146, 0.35);
+  color: var(--ink);
+}
+
+/* =========================
+   BACKDROP — subtle asian-future glow + CRT vibe
+   (applies everywhere)
+   ========================= */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -2;
+  background:
+    radial-gradient(1200px 600px at 20% -10%, rgba(255, 47, 146, 0.18), transparent 60%),
+    radial-gradient(900px 500px at 85% 10%, rgba(122, 215, 255, 0.16), transparent 55%),
+    radial-gradient(700px 500px at 55% 80%, rgba(140, 255, 181, 0.10), transparent 55%);
+}
+
+/* scanlines */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: var(--scan);
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.08) 0px,
+      rgba(255, 255, 255, 0.08) 1px,
+      rgba(0, 0, 0, 0) 3px,
+      rgba(0, 0, 0, 0) 6px
+    );
+  mix-blend-mode: overlay;
+}
+
+/* =========================
+   HERO (used by components/HeroBanner.tsx)
+   ========================= */
+.tt-hero {
+  position: relative;
+  width: 100vw;
+  height: 50vh;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(198, 167, 255, 0.28) 0%,
+      rgba(255, 47, 146, 0.18) 35%,
+      rgba(122, 215, 255, 0.14) 65%,
+      rgba(11, 15, 20, 1) 100%
+    );
+}
+
+.tt-hero__fade {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 140px;
+  background: linear-gradient(to bottom, rgba(11,15,20,0) 0%, rgba(11,15,20,1) 100%);
+  pointer-events: none;
+}
+
+.tt-hero__inner {
+  width: min(1100px, calc(100vw - 32px));
+  transition: transform 80ms linear, opacity 80ms linear, filter 80ms linear;
+}
+
+/* Optional grain layer for hero only */
+.tt-hero__grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--grain);
+  background-image:
+    radial-gradient(rgba(255,255,255,0.20) 1px, transparent 1px);
+  background-size: 3px 3px;
+  mix-blend-mode: overlay;
+}
+
+/* =========================
+   WIN98 WINDOW (kawaii-future skin)
+   ========================= */
+.tt-window {
+  background: linear-gradient(180deg, var(--win-face), var(--win-face-2));
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-deep);
+
+  /* Win98 3D bevel */
+  border-top: 2px solid var(--win-hi);
+  border-left: 2px solid var(--win-hi);
+  border-right: 2px solid var(--win-lo);
+  border-bottom: 2px solid var(--win-lo);
+
+  /* Glow ring */
+  outline: 1px solid rgba(255, 47, 146, 0.12);
+  outline-offset: 2px;
+}
+
+.tt-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 10px 12px;
+  border-top-left-radius: var(--r-lg);
+  border-top-right-radius: var(--r-lg);
+
+  background: linear-gradient(
+    to right,
+    rgba(198, 167, 255, 0.95),
+    rgba(255, 111, 183, 0.95),
+    rgba(140, 255, 181, 0.85)
+  );
+
+  border-bottom: 1px solid rgba(0,0,0,0.12);
+}
+
+.tt-title {
+  font-family: "GAU Cube", ui-sans-serif, system-ui, Arial;
+  font-weight: 700;
+  color: var(--win-ink);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.tt-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.tt-btn {
+  width: 14px;
+  height: 14px;
+  background: #f7f7f7;
+  border-top: 1px solid var(--win-hi);
+  border-left: 1px solid var(--win-hi);
+  border-right: 1px solid var(--win-lo);
+  border-bottom: 1px solid var(--win-lo);
+  border-radius: 3px;
+  position: relative;
+}
+
+.tt-btn:nth-child(1)::after { content: ""; position: absolute; inset: 5px 3px; border-top: 2px solid rgba(0,0,0,0.45); }
+.tt-btn:nth-child(2)::after { content: ""; position: absolute; inset: 4px; border: 1px solid rgba(0,0,0,0.45); }
+.tt-btn:nth-child(3)::after { content: ""; position: absolute; inset: 4px; border-right: 2px solid rgba(0,0,0,0.45); transform: rotate(45deg); }
+
+.tt-window__body {
+  padding: 18px 18px 22px;
+}
+
+/* Big headline */
+.tt-hero__text {
+  margin: 0;
+  width: 100%;
+  text-align: center;
+
+  font-family: "GAU Cube", ui-sans-serif, system-ui, Arial;
+  font-weight: 700;
+
+  /* around ~150px on desktop */
+  font-size: clamp(30px, 10vw, 70px);
+  line-height: 0.9;
+
+  color: var(--win-ink);
+  text-shadow:
+    0 1px 0 rgba(255,255,255,0.55),
+    0 0 18px rgba(255,47,146,0.22),
+    0 0 28px rgba(198,167,255,0.18);
+}
+
+/* Sub copy */
+.tt-hero__sub {
+  margin: 10px 0 0;
+  text-align: center;
+  color: rgba(22, 22, 22, 0.72);
+  font-weight: 600;
+}
+
+/* =========================
+   FEED CARDS (give them className="tt-card" if you want)
+   ========================= */
+.tt-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-soft);
+}
+
+.tt-card:hover {
+  border-color: var(--border-glow);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.42);
+}
+
+/* Username + hashtag row look */
+.tt-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Fancy pill link (optional) */
+.tt-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(122, 215, 255, 0.35);
+  background: rgba(122, 215, 255, 0.08);
+}
+
+.tt-pill:hover {
+  border-color: rgba(255, 47, 146, 0.55);
+  background: rgba(255, 47, 146, 0.12);
+}
+
+/* Audio: slightly more “console” */
+audio {
+  width: 100%;
+  filter: saturate(1.2) contrast(1.05);
+}
+
+/* =========================
+   UTIL (optional)
+   ========================= */
+.tt-muted { color: var(--muted); }
+.tt-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 14px 0; }
+
+/* =========================
+   APP NAME (TapeTag)
+   ========================= */
+.tt-appname {
+  font-family: "GAU Cube", ui-sans-serif, system-ui, Arial;
+  font-weight: 700;
+  font-size: clamp(18px, 3vw, 28px);
+
+  color: #8CFFB5; /* vert Game Boy pétant */
+
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+
+  text-shadow:
+    0 0 8px rgba(140, 255, 181, 0.55),
+    0 0 18px rgba(140, 255, 181, 0.35);
+
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+}
+
+/* =========================
+   LAYOUT 3 COLONNES (ADS)
+   ========================= */
+.tt-layout {
+  display: grid;
+  grid-template-columns: minmax(300px, 1fr) minmax(0, 960px) minmax(300px, 1fr);
+  width: 100%;
+}
+
+/* Contenu central */
+.tt-main {
+  min-width: 0;
+}
+
+.tt-ad {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tt-ad__inner {
+  width: 100%;
+  height: calc(100vh - 28px);
+
+  /* Web 1.0 / Win98 panel */
+  background: linear-gradient(180deg, #fff, #f4f0ff);
+  border-radius: 10px;
+
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #2b2b2b;
+  border-bottom: 2px solid #2b2b2b;
+
+  box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.tt-ad__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 10px;
+
+  /* titlebar arc-en-ciel rétro */
+  background: linear-gradient(
+    to right,
+    rgba(255,47,146,0.95),
+    rgba(198,167,255,0.95),
+    rgba(122,215,255,0.92),
+    rgba(140,255,181,0.88)
+  );
+  border-bottom: 1px solid rgba(0,0,0,0.15);
+}
+
+.tt-ad__title {
+  font-family: "GAU Cube", system-ui, Arial;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #141414;
+}
+
+.tt-ad__badge {
+  font-family: "GAU Cube", system-ui, Arial;
+  font-size: 11px;
+  color: #141414;
+  opacity: 0.8;
+}
+
+.tt-ad__content {
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+/* “Old web” ad blocks */
+.tt-banner {
+  background: #000;
+  border-radius: 8px;
+
+  border-top: 2px solid rgba(255,255,255,0.45);
+  border-left: 2px solid rgba(255,255,255,0.45);
+  border-right: 2px solid rgba(0,0,0,0.7);
+  border-bottom: 2px solid rgba(0,0,0,0.7);
+
+  padding: 10px;
+  color: #e6e1ff;
+  text-align: center;
+  font-family: "GAU Cube", system-ui, Arial;
+  letter-spacing: 0.08em;
+
+  text-shadow: 0 0 14px rgba(255,47,146,0.35);
+}
+
+/* image “pub” style web 1.0 */
+.tt-banner img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  display: block;
+  image-rendering: pixelated; /* vibe old web */
+}
+
+/* little marquee vibe */
+.tt-marquee {
+  white-space: nowrap;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(255,47,146,0.12);
+  border: 1px dashed rgba(255,47,146,0.55);
+  padding: 8px 10px;
+  color: #141414;
+  font-family: "GAU Cube", system-ui, Arial;
+  letter-spacing: 0.08em;
+}
+
+.tt-marquee span {
+  display: inline-block;
+  padding-left: 100%;
+  animation: tt-marquee 10s linear infinite;
+}
+
+@keyframes tt-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+/* Mobile: on garde la règle hide ads */
+@media (max-width: 1100px) {
+  .tt-layout { grid-template-columns: 1fr; }
+  .tt-ad { display: none; }
+}
+
+/* Responsive : pas de pubs sur mobile */
+@media (max-width: 1100px) {
+  .tt-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .tt-ad {
+    display: none;
+  }
+}
+
+/* =========================
+   WIN98 BUTTONS
+   ========================= */
+.tt-btn98 {
+  font-family: "GAU Cube", system-ui, Arial;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  padding: 10px 14px;
+  background: linear-gradient(180deg, #f6f0ff, #e2dbff);
+  color: #141414;
+
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #2b2b2b;
+  border-bottom: 2px solid #2b2b2b;
+
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+
+  cursor: pointer;
+  user-select: none;
+}
+
+.tt-btn98:hover {
+  filter: brightness(1.03);
+}
+
+.tt-btn98:active {
+  border-top: 2px solid #2b2b2b;
+  border-left: 2px solid #2b2b2b;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+  transform: translateY(1px);
+}
+
+/* Disabled state */
+.tt-btn98:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
