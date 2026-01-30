@@ -10,10 +10,13 @@ export default function Recorder() {
 
   const mediaRecRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<BlobPart[]>([]);
-  const timerRef = useRef<number | null>(null);
-  const startedAtRef = useRef<number>(0);
+
+const startAtRef = useRef<number | null>(null);
+const timerRef = useRef<number | null>(null);
 
   async function start() {
+   if (isRec) return;
+
     setStatus("");
     setBlob(null);
     setDuration(0);
@@ -30,20 +33,28 @@ export default function Recorder() {
       setBlob(b);
     };
 
-    mr.start();
-    setIsRec(true);
-    startedAtRef.current = Date.now();
 
-    timerRef.current = window.setInterval(() => {
-      const sec = Math.min(30, Math.floor((Date.now() - startedAtRef.current) / 1000));
-      setDuration(sec);
-      if (sec >= 30) stop();
-    }, 200);
-  }
+// stoppe tout timer existant
+
+if (timerRef.current) {
+  window.clearInterval(timerRef.current);
+  timerRef.current = null;
+}
+
+startAtRef.current = Date.now();
+setDuration(0);
+
+timerRef.current = window.setInterval(() => {
+  const started = startAtRef.current ?? Date.now();
+  const sec = Math.min(30, Math.floor((Date.now() - started) / 1000));
+  setDuration(sec);
+  if (sec >= 30) stop();
+},/ 200);
 
   function stop() {
     if (timerRef.current) window.clearInterval(timerRef.current);
     timerRef.current = null;
+    startAtRef.current = null;
     mediaRecRef.current?.stop();
     setIsRec(false);
   }
@@ -67,7 +78,8 @@ export default function Recorder() {
     }
 
     setStatus("Published!");
-    // Pour l’instant on renvoie juste vers la home, on fera la page détail après
+   
+ // Pour l’instant on renvoie juste vers la home, on fera la page détail après
     window.location.href = "/";
   }
 
