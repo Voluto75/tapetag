@@ -81,18 +81,25 @@ export default function Recorder() {
       marginBottom: 12,
     }}
   >
-    {!isRec ? (
-      /* bouton Record ailleurs si présent */
-      null
-    ) : (
-      <button
-        type="button"
-        onClick={stop}
-        className="tt-btn98"
-      >
-        Stop ({duration}s)
-      </button>
-    )}
+
+{!isRec ? (
+  <button
+    type="button"
+    onClick={start}
+    className="tt-btn98"
+  >
+    ● Record
+  </button>
+) : (
+  <button
+    type="button"
+    onClick={stop}
+    className="tt-btn98 tt-btn98--danger"
+  >
+    Stop ({duration}s)
+  </button>
+)}
+
 
     <span style={{ opacity: 0.8 }}>Max 30s</span>
   </div>
