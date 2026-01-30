@@ -41,15 +41,16 @@ if (timerRef.current) {
   timerRef.current = null;
 }
 
-startAtRef.current = Date.now();
+const started = performance.now();
+startAtRef.current = Date.now(); // (optionnel, on garde si tu veux)
 setDuration(0);
 
 timerRef.current = window.setInterval(() => {
-  const started = startAtRef.current ?? Date.now();
-  const sec = Math.min(30, Math.floor((Date.now() - started) / 1000));
+  const sec = Math.min(30, Math.floor((performance.now() - started) / 1000));
   setDuration(sec);
   if (sec >= 30) stop();
-},/ 200);
+}, 1000);
+
 
   function stop() {
     if (timerRef.current) window.clearInterval(timerRef.current);
