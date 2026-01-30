@@ -18,7 +18,8 @@ export default async function TagPage({ params }: { params: Promise<{ tag: strin
       <main style={{ padding: 24 }}>
         <a href="/">Back</a>
         <h1 style={{ fontSize: 28, marginTop: 12 }}>DEBUG</h1>
-        <pre>params.tag: {JSON.stringify(params.tag)}</pre>
+<pre>tag: {JSON.stringify(tag)}</pre>
+
         <pre>slug: {JSON.stringify(slug)}</pre>
         <pre>hashtag: {JSON.stringify(hashtag)}</pre>
       </main>
