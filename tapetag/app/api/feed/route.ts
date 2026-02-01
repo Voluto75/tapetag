@@ -43,7 +43,8 @@ export async function GET(req: Request) {
 
   const items = (res.data ?? []).map((p) => ({
     ...p,
-    audio_url: `${base}/${p.audio_path}`,
+audio_url: `${base}/${String(p.audio_path).replace(/^\/+/, "")}`,
+
   }));
 
   // ---- LIKES (Niveau A) ----
