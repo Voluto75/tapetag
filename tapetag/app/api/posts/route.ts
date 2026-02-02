@@ -81,7 +81,7 @@ if (up.error) {
 if (ins.error) {
   console.log("INSERT voice_posts ERROR", ins.error);
   return NextResponse.json(
-    { error: ins.error.message, details: ins.error.details, hint: ins.error.hint, code: ins.error.code },
+    { error: ins.error.message },
     { status: 500 }
   );
 }
