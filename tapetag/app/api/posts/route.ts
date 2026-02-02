@@ -20,6 +20,13 @@ function normalizeHashtag(input: string) {
 
 export async function POST(req: Request) {
   try {
+   console.log("api/posts env", {
+   hasUrl: !!process.env.SUPABASE_URL,
+   hasService: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+   urlHead: process.env.SUPABASE_URL?.slice(0, 30),
+   serviceHead: process.env.SUPABASE_SERVICE_ROLE_KEY?.slice(0, 10),
+});
+
     const form = await req.formData();
 
     const file = form.get("audio") as File | null;
