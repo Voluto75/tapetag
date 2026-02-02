@@ -20,23 +20,8 @@ export default function Recorder() {
   const [blob, setBlob] = useState<Blob | null>(null);
   const [duration, setDuration] = useState(0);
   const [status, setStatus] = useState("");
-  const [blink, setBlink] = useState(true);
 
   const shownSeconds = Math.min(30, Math.max(0, Number(duration) || 0));
-
-  useEffect(() => {
-    // clignote seulement pendant l'enregistrement
-    if (!isRec) {
-      setBlink(true); // reset (visible) quand on n'enregistre pas
-      return;
-    }
-
-    const id = window.setInterval(() => {
-      setBlink((b) => !b);
-    }, 500);
-
-    return () => window.clearInterval(id);
-  }, [isRec]);
 
   useEffect(() => {
     // cleanup si hot reload / unmount
@@ -175,38 +160,9 @@ export default function Recorder() {
             ● Record
           </button>
         ) : (
-        <button
-          type="button"
-          onClick={stop}
-          style={{
-           padding: "8px 16px",
-           fontFamily: "'GAU Font Cube'",
-           fontSize: 14,
-           background: "#d6b3ff",
-           color: "#2d0036",
-           borderTop: "2px solid #f2e6ff",
-           borderLeft: "2px solid #f2e6ff",
-           borderBottom: "2px solid #6b2fa3",
-           borderRight: "2px solid #6b2fa3",
-           boxShadow: "inset -1px -1px 0 #8a4fd1",
-           cursor: "pointer",
-         }}
-        >
-  <span
-    style={{
-      fontFamily: "'GAU Font Cube', monospace",
-      letterSpacing: 3,
-      textTransform: "uppercase",
-      marginRight: 6,
-      opacity: blink ? 1 : 0, // 👈 clignotement
-      transition: "opacity 0.1s linear",
-    }}
-  >
-    stop
-  </span>
-  ({shownSeconds}s)
-</button>
-
+          <button type="button" onClick={stop} className="tt-btn98 tt-btn98--danger">
+            Stop ({shownSeconds}s)
+          </button>
         )}
 
         <span style={{ opacity: 0.8 }}>Max 30s</span>

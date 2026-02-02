@@ -232,7 +232,7 @@ body::after {
 .tt-btn {
   width: 14px;
   height: 14px;
-  background: #f7f7f7;
+  background: #C0C0C0;
   border-top: 1px solid var(--win-hi);
   border-left: 1px solid var(--win-hi);
   border-right: 1px solid var(--win-lo);
@@ -543,5 +543,20 @@ audio {
   opacity: 0.5;
   cursor: not-allowed;
   filter: grayscale(1);
+}
+
+/* =====================================================
+   FIX – Empêche tout pseudo-élément sur les boutons Win98
+   ===================================================== */
+
+.tt-btn98::before,
+.tt-btn98::after,
+.tt-btn98--primary::before,
+.tt-btn98--primary::after,
+.tt-btn98--danger::before,
+.tt-btn98--danger::after {
+  content: "" !important;
+  display: none !important;
+  visibility: hidden !important;
 }
 
