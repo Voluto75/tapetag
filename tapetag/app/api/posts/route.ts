@@ -61,11 +61,10 @@ export async function POST(req: Request) {
 if (up.error) {
   console.log("UPLOAD voices ERROR", up.error);
   return NextResponse.json(
-    { error: up.error.message, details: up.error.details, hint: up.error.hint, code: up.error.code },
+    { error: up.error.message },
     { status: 500 }
   );
 }
-
     const ins = await supabase
       .from("voice_posts")
       .insert({
