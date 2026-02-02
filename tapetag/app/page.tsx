@@ -38,7 +38,7 @@ export default async function Home() {
 >
   <span className="tt-appname">TapeTag</span>
 
-  <a className="tt-newbtn" href="/new">+ New Tape</a>
+  <a className="tt-newbtn" href="/new">+ NEW TAPE</a>
 </header>
         {/* HERO */}
         <HeroBanner text="Just say it." />

@@ -78,8 +78,8 @@ html, body {
 }
 
 body {
-  font-family: ui-sans-serif, system-ui, -apple-system, Arial, Helvetica, sans-serif;
-  line-height: 1.45;
+  font-family: "GAU Font Cube", monospace;
+  font-weight: bold;
 }
 
 /* Links */
@@ -146,10 +146,10 @@ body::after {
   background:
     linear-gradient(
       to bottom,
-      rgba(198, 167, 255, 0.28) 0%,
+      rgba(198, 167, 255, 0.28) 50%,
       rgba(255, 47, 146, 0.18) 35%,
       rgba(122, 215, 255, 0.14) 65%,
-      rgba(11, 15, 20, 1) 100%
+      rgba(11, 15, 20, 1) 50%
     );
 }
 
@@ -162,9 +162,9 @@ body::after {
 }
 
 .tt-hero__inner {
-  width: min(1100px, calc(100vw - 32px));
-  transition: transform 80ms linear, opacity 80ms linear, filter 80ms linear;
-}
+ width: min(1100px, calc(100vw - 32px));
+ transition: transform 80ms linear, opacity 80ms linear, filter 80ms linear;
+ }
 
 /* Optional grain layer for hero only */
 .tt-hero__grain {
