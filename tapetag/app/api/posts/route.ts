@@ -58,7 +58,13 @@ export async function POST(req: Request) {
       contentType: file.type,
       upsert: false,
     });
-    if (up.error) return NextResponse.json({ error: up.error.message }, { status: 500 });
+if (up.error) {
+  console.log("UPLOAD voices ERROR", up.error);
+  return NextResponse.json(
+    { error: up.error.message, details: up.error.details, hint: up.error.hint, code: up.error.code },
+    { status: 500 }
+  );
+}
 
     const ins = await supabase
       .from("voice_posts")
@@ -73,7 +79,13 @@ export async function POST(req: Request) {
       .select("id")
       .single();
 
-    if (ins.error) return NextResponse.json({ error: ins.error.message }, { status: 500 });
+if (ins.error) {
+  console.log("INSERT voice_posts ERROR", ins.error);
+  return NextResponse.json(
+    { error: ins.error.message, details: ins.error.details, hint: ins.error.hint, code: ins.error.code },
+    { status: 500 }
+  );
+}
 
     return NextResponse.json({ id: ins.data.id }, { status: 201 });
   } catch (e: any) {
