@@ -171,26 +171,14 @@ export default function Recorder() {
     <div style={{ maxWidth: 520 }}>
       <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 12 }}>
         {!isRec ? (
-          <button type="button" onClick={start} className="tt-btn98">
+          <button type="button" onClick={start} className="tt-rec-btn tt-rec-btn--idle">
             ● Record
           </button>
         ) : (
         <button
           type="button"
           onClick={stop}
-          style={{
-           padding: "8px 16px",
-           fontFamily: "'GAU Font Cube'",
-           fontSize: 14,
-           background: "#d6b3ff",
-           color: "#2d0036",
-           borderTop: "2px solid #f2e6ff",
-           borderLeft: "2px solid #f2e6ff",
-           borderBottom: "2px solid #6b2fa3",
-           borderRight: "2px solid #6b2fa3",
-           boxShadow: "inset -1px -1px 0 #8a4fd1",
-           cursor: "pointer",
-         }}
+          className="tt-rec-btn tt-rec-btn--rec"
         >
   <span
     style={{
@@ -221,8 +209,24 @@ export default function Recorder() {
       <form onSubmit={publish} style={{ display: "grid", gap: 10 }}>
         <input name="pseudonym" placeholder="Pseudonym" required />
         <input name="hashtag" placeholder="#hashtag" required />
+        <select name="theme" defaultValue="politique" required>
+          <option value="politique">Politique (bleu clair)</option>
+          <option value="foot">Foot (vert)</option>
+          <option value="sex">Sex (rose)</option>
+          <option value="nourriture">Nourriture (jaune)</option>
+          <option value="business">Business (bleu nuit)</option>
+          <option value="autre-sport">Autre sport (violet)</option>
+          <option value="jeux-video">Jeux vidéo (gris)</option>
+          <option value="informatique">Informatique (noir)</option>
+          <option value="nature">Nature (blanc cassé)</option>
+        </select>
         <input name="title" placeholder="Title (optional)" />
         <textarea name="caption" placeholder="Caption (optional)" />
+        <input
+        name="passcode"
+        placeholder="Mot de passe (optionnel)"
+        autoComplete="new-password"
+        />
 
         <button type="submit" disabled={!blob} className="tt-btn98 tt-btn98--primary">
           Publish
@@ -233,4 +237,3 @@ export default function Recorder() {
     </div>
   );
 }
-

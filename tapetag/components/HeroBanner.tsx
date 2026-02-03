@@ -37,7 +37,7 @@ export default function HeroBanner({ text }: Props) {
         position: "relative",
         overflow: "hidden",
         background:
-          "linear-gradient(to bottom, rgba(255,183,213,0.25), rgba(0,0,0,1))",
+          "linear-gradient(to bottom, rgba(3,10,6,0.9), rgba(0,0,0,1)), repeating-linear-gradient(90deg, rgba(40,255,140,0.18) 0 6px, rgba(0,0,0,0) 6px 12px), repeating-linear-gradient(180deg, rgba(40,255,140,0.14) 0 6px, rgba(0,0,0,0) 6px 12px)",
       }}
     >
       <div style={styles}>
@@ -46,4 +46,3 @@ export default function HeroBanner({ text }: Props) {
     </section>
   );
 }
-

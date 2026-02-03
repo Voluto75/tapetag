@@ -4,6 +4,7 @@ import FeedClient from "@/components/FeedClient";
 import LikeButton from "@/components/LikeButton";
 
 import HeroBanner from "@/components/HeroBanner";
+import TrendingTags from "@/components/TrendingTags";
 
 export default async function Home() {
 
@@ -38,10 +39,12 @@ export default async function Home() {
 >
   <span className="tt-appname">TapeTag</span>
 
-  <a className="tt-newbtn" href="/new">+ NEW TAPE</a>
+  <a className="tt-newbtn tt-newbtn--hero" href="/new">+ NEW TAPE</a>
 </header>
         {/* HERO */}
         <HeroBanner text="Just say it." />
+
+        <TrendingTags />
 
 <FeedClient />
 
@@ -57,4 +60,3 @@ export default async function Home() {
     </main>
   );
 }
-
