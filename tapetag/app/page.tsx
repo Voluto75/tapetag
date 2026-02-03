@@ -37,7 +37,10 @@ export default async function Home() {
     gap: 12,
   }}
 >
-  <span className="tt-appname">TapeTag</span>
+  <span className="tt-appname">
+    TapeTag
+    <span style={{ marginLeft: 8, fontSize: "0.25em", opacity: 0.75 }}>raw</span>
+  </span>
 
   <a className="tt-newbtn tt-newbtn--hero" href="/new">+ NEW TAPE</a>
 </header>

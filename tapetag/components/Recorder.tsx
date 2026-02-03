@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 
-export default function Recorder() {
+export default function Recorder({ parentId }: { parentId?: string }) {
   // anti double-start + anti anciens timers
   const runRef = useRef(0);
   const startLockRef = useRef(false);
@@ -207,6 +207,9 @@ export default function Recorder() {
       )}
 
       <form onSubmit={publish} style={{ display: "grid", gap: 10 }}>
+        {parentId ? (
+          <input type="hidden" name="parent_id" value={parentId} />
+        ) : null}
         <input name="pseudonym" placeholder="Pseudonym" required />
         <input name="hashtag" placeholder="#hashtag" required />
         <select name="theme" defaultValue="politique" required>

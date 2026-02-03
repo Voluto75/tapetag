@@ -35,9 +35,10 @@ export async function GET(req: Request) {
   let q = supabase
     .from("voice_posts")
     .select(
-      "id,pseudonym,hashtag,theme,title,caption,audio_duration_seconds,created_at,status,passcode_hash,listen_count"
+      "id,pseudonym,hashtag,theme,title,caption,audio_duration_seconds,created_at,status,passcode_hash,listen_count,parent_post_id"
     )
     .eq("status", "active")
+    .is("parent_post_id", null)
     .limit(50);
 
   const sort = rawSort.toLowerCase();
@@ -111,8 +112,48 @@ export async function GET(req: Request) {
     liked_by_me: likedByMeSet.has(p.id),
   }));
 
+  // ---- REPLIES ----
+  let repliesRows: any[] = [];
+  if (ids.length > 0) {
+    const replies = await supabase
+      .from("voice_posts")
+      .select(
+        "id,pseudonym,hashtag,theme,title,caption,audio_duration_seconds,created_at,status,passcode_hash,listen_count,parent_post_id"
+      )
+      .eq("status", "active")
+      .in("parent_post_id", ids)
+      .order("created_at", { ascending: true });
+
+    if (!replies.error) repliesRows = (replies.data as any) ?? [];
+  }
+
+  const repliesByParent = new Map<string, any[]>();
+  for (const r of repliesRows) {
+    const pid = r.parent_post_id;
+    if (!pid) continue;
+    if (!repliesByParent.has(pid)) repliesByParent.set(pid, []);
+    repliesByParent.get(pid)!.push({
+      id: r.id,
+      pseudonym: r.pseudonym,
+      hashtag: r.hashtag,
+      theme: r.theme ?? "politique",
+      title: r.title ?? null,
+      caption: r.caption ?? null,
+      audio_duration_seconds: r.audio_duration_seconds,
+      created_at: r.created_at,
+      locked: !!r.passcode_hash,
+      listen_count: r.listen_count ?? 0,
+      parent_post_id: r.parent_post_id,
+    });
+  }
+
+  const itemsWithReplies = items.map((p: any) => ({
+    ...p,
+    replies: repliesByParent.get(p.id) ?? [],
+  }));
+
   return NextResponse.json(
-    { items },
+    { items: itemsWithReplies },
     {
       headers: {
         "Cache-Control": "no-store",

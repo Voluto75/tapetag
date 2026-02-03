@@ -17,6 +17,21 @@ type FeedItem = {
   like_count: number;
   liked_by_me: boolean;
   listen_count: number;
+  replies?: ReplyItem[];
+};
+
+type ReplyItem = {
+  id: string;
+  pseudonym: string;
+  hashtag: string;
+  theme: string;
+  title: string | null;
+  caption: string | null;
+  audio_duration_seconds: number;
+  created_at: string;
+  locked: boolean;
+  listen_count: number;
+  parent_post_id: string;
 };
 
 export default function FeedClient() {
@@ -27,6 +42,7 @@ export default function FeedClient() {
   const [mode, setMode] = useState<"pseudonym" | "hashtag">("pseudonym");
   const [sort, setSort] = useState<"top" | "recent">("top");
   const [theme, setTheme] = useState<string>("all");
+  const [openReplies, setOpenReplies] = useState<Record<string, boolean>>({});
 
   const loadFeed = async (opts?: {
     query?: string;
@@ -256,6 +272,8 @@ export default function FeedClient() {
       {items.map((p) => (
         (() => {
           const theme = themeStyles[p.theme] || themeStyles["politique"];
+          const replies = p.replies ?? [];
+          const isOpen = !!openReplies[p.id];
           return (
         <article
           key={p.id}
@@ -303,6 +321,74 @@ export default function FeedClient() {
           <div style={{ marginTop: 10, fontSize: 12, opacity: 0.75 }}>
             {p.audio_duration_seconds}s · {p.listen_count} écoute{p.listen_count > 1 ? "s" : ""}
           </div>
+
+          <div style={{ marginTop: 10, display: "flex", gap: 10, alignItems: "center" }}>
+            <a
+              href={`/new?replyTo=${encodeURIComponent(p.id)}`}
+              style={{
+                fontSize: 12,
+                padding: "4px 8px",
+                borderRadius: 8,
+                border: `1px solid ${theme.border}`,
+                color: theme.badge,
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+              }}
+            >
+              cmt
+            </a>
+            <button
+              type="button"
+              onClick={() =>
+                setOpenReplies((prev) => ({ ...prev, [p.id]: !prev[p.id] }))
+              }
+              style={{
+                fontSize: 12,
+                padding: "4px 8px",
+                borderRadius: 8,
+                border: "1px solid rgba(255,255,255,0.2)",
+                background: "transparent",
+                color: "white",
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                cursor: "pointer",
+              }}
+            >
+              see cmt ({replies.length})
+            </button>
+          </div>
+
+          {isOpen && replies.length > 0 && (
+            <div style={{ marginTop: 12, display: "grid", gap: 8 }}>
+              {replies.map((r) => {
+                const rt = themeStyles[r.theme] || themeStyles["politique"];
+                return (
+                  <div
+                    key={r.id}
+                    style={{
+                      padding: 10,
+                      borderRadius: 10,
+                      background: rt.fill,
+                      border: `1px solid ${rt.border}`,
+                      boxShadow: `0 0 10px ${rt.glow}`,
+                    }}
+                  >
+                    <div style={{ fontSize: 12, opacity: 0.9 }}>
+                      <strong>{r.pseudonym}</strong> <span>{r.hashtag}</span>
+                    </div>
+                    {r.title ? <div style={{ marginTop: 6 }}>{r.title}</div> : null}
+                    {r.caption ? <div style={{ marginTop: 6, opacity: 0.9 }}>{r.caption}</div> : null}
+                    <div style={{ marginTop: 8 }}>
+                      <UnlockPlayer postId={String(r.id)} locked={!!r.locked} />
+                    </div>
+                    <div style={{ marginTop: 6, fontSize: 11, opacity: 0.75 }}>
+                      {r.audio_duration_seconds}s · {r.listen_count} écoute{r.listen_count > 1 ? "s" : ""}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </article>
           );
         })()

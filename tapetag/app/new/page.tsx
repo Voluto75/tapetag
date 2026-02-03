@@ -1,6 +1,7 @@
 import Recorder from "@/components/Recorder";
 
-export default function NewPostPage() {
+export default function NewPostPage({ searchParams }: { searchParams?: { replyTo?: string } }) {
+  const replyTo = searchParams?.replyTo;
   return (
     <main className="tt-layout">
       {/* LEFT AD */}
@@ -27,7 +28,10 @@ export default function NewPostPage() {
             margin: "-24px -24px 18px",
           }}
         >
-          <span className="tt-appname">TapeTag</span>
+          <span className="tt-appname">
+            TapeTag
+            <span style={{ marginLeft: 8, fontSize: "0.25em", opacity: 0.75 }}>raw</span>
+          </span>
 
           <a className="tt-newbtn" href="/">← HOME</a>
         </header>
@@ -48,7 +52,7 @@ export default function NewPostPage() {
           Keep it anonymous — or don’t. Feel free.
         </p>
 
-        <Recorder />
+        <Recorder parentId={replyTo} />
       </div>
 
       {/* RIGHT AD */}

@@ -17,6 +17,7 @@ const schema = z.object({
     "informatique",
     "nature",
   ]),
+  parent_id: z.string().uuid().optional().or(z.literal("")),
   title: z.string().max(80).optional().or(z.literal("")),
   caption: z.string().max(280).optional().or(z.literal("")),
   duration: z.coerce.number().int().min(1).max(30),
@@ -50,6 +51,7 @@ export async function POST(req: Request) {
       pseudonym: form.get("pseudonym"),
       hashtag: form.get("hashtag"),
       theme: form.get("theme"),
+      parent_id: form.get("parent_id"),
       title: form.get("title"),
       caption: form.get("caption"),
       duration: form.get("duration"),
@@ -57,6 +59,7 @@ export async function POST(req: Request) {
     });
 
     const hashtag = normalizeHashtag(parsed.hashtag);
+    const parent_post_id = parsed.parent_id ? parsed.parent_id : null;
 
     // ✅ hash du mot de passe (optionnel)
     const passcodeRaw = (parsed.passcode || "").trim();
@@ -88,6 +91,7 @@ export async function POST(req: Request) {
         pseudonym: parsed.pseudonym,
         hashtag,
         theme: parsed.theme,
+        parent_post_id,
         title: parsed.title || null,
         caption: parsed.caption || null,
         audio_path: storagePath, // ✅ on stocke le chemin Storage
