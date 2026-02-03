@@ -17,7 +17,7 @@ const schema = z.object({
     "informatique",
     "nature",
   ]),
-  parent_id: z.string().uuid().optional().or(z.literal("")),
+  parent_id: z.union([z.string().uuid(), z.literal(""), z.null()]).optional(),
   title: z.string().max(80).optional().or(z.literal("")),
   caption: z.string().max(280).optional().or(z.literal("")),
   duration: z.coerce.number().int().min(1).max(30),
