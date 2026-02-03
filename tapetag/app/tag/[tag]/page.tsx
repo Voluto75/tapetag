@@ -30,9 +30,12 @@ export default async function TagPage({ params }: { params: Promise<{ tag: strin
 
   const filtered = await supabase
     .from("voice_posts")
-    .select("id,pseudonym,hashtag,title,caption,audio_path,audio_duration_seconds,created_at")
+    .select(
+      "id,pseudonym,hashtag,title,caption,audio_path,audio_duration_seconds,created_at,listen_count"
+    )
     .eq("status", "active")
     .ilike("hashtag", hashtag)
+    .order("listen_count", { ascending: false, nullsFirst: false })
     .order("created_at", { ascending: false })
     .limit(50);
 

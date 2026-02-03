@@ -37,10 +37,14 @@ export default function TrendingTags() {
       ) : (
         <div className="tt-trends__grid">
           {items.map((t) => (
-            <div key={t.hashtag} className="tt-trends__item">
+            <a
+              key={t.hashtag}
+              className="tt-trends__item"
+              href={`/tag/${encodeURIComponent(t.hashtag.replace("#", ""))}`}
+            >
               <span className="tt-trends__tag">{t.hashtag}</span>
               <span className="tt-trends__count">{t.count}</span>
-            </div>
+            </a>
           ))}
         </div>
       )}
