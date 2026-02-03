@@ -1,5 +1,7 @@
 import Recorder from "@/components/Recorder";
 
+export const dynamic = "force-dynamic";
+
 export default function NewPostPage({ searchParams }: { searchParams?: { replyTo?: string } }) {
   const replyTo = searchParams?.replyTo;
   return (
