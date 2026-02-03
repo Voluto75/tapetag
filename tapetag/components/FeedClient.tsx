@@ -76,14 +76,14 @@ export default function FeedClient() {
       const j = await r.json().catch(() => ({}));
 
       if (!r.ok) {
-        setErr(j?.error || "Impossible de charger le feed.");
+        setErr(j?.error || "Unable to load feed.");
         setItems([]);
         return;
       }
 
       setItems(Array.isArray(j?.items) ? j.items : []);
     } catch (e: any) {
-      setErr(e?.message || "Erreur réseau.");
+      setErr(e?.message || "Network error.");
       setItems([]);
     } finally {
       setLoading(false);
@@ -154,6 +154,18 @@ export default function FeedClient() {
     },
   };
 
+  const themeLabels: Record<string, string> = {
+    "politique": "politics",
+    "foot": "foot",
+    "sex": "sex",
+    "nourriture": "food",
+    "business": "business",
+    "autre-sport": "other sport",
+    "jeux-video": "video games",
+    "informatique": "tech",
+    "nature": "nature",
+  };
+
   return (
     <div style={{ display: "grid", gap: 12 }}>
       <form
@@ -175,7 +187,7 @@ export default function FeedClient() {
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={mode === "hashtag" ? "#hashtag" : "pseudo"}
+          placeholder={mode === "hashtag" ? "#hashtag" : "username"}
           style={{
             width: "100%",
             padding: "10px 12px",
@@ -197,7 +209,7 @@ export default function FeedClient() {
             color: "white",
           }}
         >
-          <option value="pseudonym">Pseudo</option>
+          <option value="pseudonym">Username</option>
           <option value="hashtag">Hashtag</option>
         </select>
 
@@ -212,15 +224,15 @@ export default function FeedClient() {
             color: "white",
           }}
         >
-          <option value="all">Tous thèmes</option>
-          <option value="politique">Politique</option>
+          <option value="all">All themes</option>
+          <option value="politique">Politics</option>
           <option value="foot">Foot</option>
           <option value="sex">Sex</option>
-          <option value="nourriture">Nourriture</option>
+          <option value="nourriture">Food</option>
           <option value="business">Business</option>
-          <option value="autre-sport">Autre sport</option>
-          <option value="jeux-video">Jeux vidéo</option>
-          <option value="informatique">Informatique</option>
+          <option value="autre-sport">Other sport</option>
+          <option value="jeux-video">Video games</option>
+          <option value="informatique">Tech</option>
           <option value="nature">Nature</option>
         </select>
 
@@ -235,12 +247,12 @@ export default function FeedClient() {
             color: "white",
           }}
         >
-          <option value="top">Plus écoutés</option>
-          <option value="recent">Plus récents</option>
+          <option value="top">Most listened</option>
+          <option value="recent">Most recent</option>
         </select>
 
         <button className="tt-newbtn" type="submit" style={{ padding: "8px 12px" }}>
-          Rechercher
+          Search
         </button>
 
         <button
@@ -259,13 +271,13 @@ export default function FeedClient() {
             color: "white",
           }}
         >
-          Effacer
+          Clear
         </button>
       </form>
 
       {items.length === 0 && (
         <div style={{ padding: 12, opacity: 0.8 }}>
-          {query.trim().length > 0 ? "Aucun résultat pour cette recherche." : "Aucun post pour l’instant."}
+          {query.trim().length > 0 ? "No results for this search." : "No posts yet."}
         </div>
       )}
 
@@ -301,7 +313,7 @@ export default function FeedClient() {
                   opacity: 0.9,
                 }}
               >
-                {p.theme}
+                {themeLabels[p.theme] ?? p.theme}
               </span>
               {p.locked && <span style={{ marginLeft: 10, fontWeight: 700 }}>🔒 LOCKED</span>}
               {p.title ? <div style={{ marginTop: 6 }}>{p.title}</div> : null}
@@ -319,7 +331,7 @@ export default function FeedClient() {
           </div>
 
           <div style={{ marginTop: 10, fontSize: 12, opacity: 0.75 }}>
-            {p.audio_duration_seconds}s · {p.listen_count} écoute{p.listen_count > 1 ? "s" : ""}
+            {p.audio_duration_seconds}s · {p.listen_count} listen{p.listen_count > 1 ? "s" : ""}
           </div>
 
           <div style={{ marginTop: 10, display: "flex", gap: 10, alignItems: "center" }}>
@@ -382,7 +394,7 @@ export default function FeedClient() {
                       <UnlockPlayer postId={String(r.id)} locked={!!r.locked} />
                     </div>
                     <div style={{ marginTop: 6, fontSize: 11, opacity: 0.75 }}>
-                      {r.audio_duration_seconds}s · {r.listen_count} écoute{r.listen_count > 1 ? "s" : ""}
+                      {r.audio_duration_seconds}s · {r.listen_count} listen{r.listen_count > 1 ? "s" : ""}
                     </div>
                   </div>
                 );

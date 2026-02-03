@@ -204,7 +204,7 @@ export default function Recorder({ parentId }: { parentId?: string }) {
 
         )}
 
-        <span style={{ opacity: 0.8 }}>Max 30s</span>
+      <span style={{ opacity: 0.8 }}>Max 30s</span>
       </div>
 
       {blob && (
@@ -220,21 +220,21 @@ export default function Recorder({ parentId }: { parentId?: string }) {
         <input name="pseudonym" placeholder="Pseudonym" required />
         <input name="hashtag" placeholder="#hashtag" required />
         <select name="theme" defaultValue="politique" required>
-          <option value="politique">Politique (bleu clair)</option>
-          <option value="foot">Foot (vert)</option>
-          <option value="sex">Sex (rose)</option>
-          <option value="nourriture">Nourriture (jaune)</option>
-          <option value="business">Business (bleu nuit)</option>
-          <option value="autre-sport">Autre sport (violet)</option>
-          <option value="jeux-video">Jeux vidéo (gris)</option>
-          <option value="informatique">Informatique (noir)</option>
-          <option value="nature">Nature (blanc cassé)</option>
+          <option value="politique">Politics (light blue)</option>
+          <option value="foot">Foot (green)</option>
+          <option value="sex">Sex (pink)</option>
+          <option value="nourriture">Food (yellow)</option>
+          <option value="business">Business (midnight blue)</option>
+          <option value="autre-sport">Other sport (violet)</option>
+          <option value="jeux-video">Video games (gray)</option>
+          <option value="informatique">Tech (black)</option>
+          <option value="nature">Nature (off-white)</option>
         </select>
         <input name="title" placeholder="Title (optional)" />
         <textarea name="caption" placeholder="Caption (optional)" />
         <input
         name="passcode"
-        placeholder="Mot de passe (optionnel)"
+        placeholder="Passcode (optional)"
         autoComplete="new-password"
         />
 

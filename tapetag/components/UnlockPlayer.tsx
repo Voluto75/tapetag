@@ -14,7 +14,7 @@ export default function UnlockPlayer({ postId, locked }: Props) {
   const [err, setErr] = useState("");
 
   if (!postId || postId === "undefined" || postId === "null") {
-    return <div style={{ color: "crimson" }}>Post introuvable (id manquant).</div>;
+    return <div style={{ color: "crimson" }}>Post not found (missing id).</div>;
   }
 
   async function requestSignedUrl(code: string) {
@@ -32,20 +32,20 @@ export default function UnlockPlayer({ postId, locked }: Props) {
 
       if (!r.ok) {
         setSignedUrl(null);
-        setErr(j?.error || "Impossible de déverrouiller.");
+        setErr(j?.error || "Unable to unlock.");
         return;
       }
 
       if (!j?.url) {
         setSignedUrl(null);
-        setErr("Réponse invalide (URL manquante).");
+        setErr("Invalid response (missing URL).");
         return;
       }
 
       setSignedUrl(j.url);
     } catch (e: any) {
       setSignedUrl(null);
-      setErr(e?.message || "Erreur réseau.");
+      setErr(e?.message || "Network error.");
     } finally {
       setLoading(false);
     }
@@ -65,7 +65,7 @@ export default function UnlockPlayer({ postId, locked }: Props) {
           }}
           style={{ opacity: 0.85 }}
         >
-          Changer / Re-déverrouiller
+          Change / Re-unlock
         </button>
       </div>
     );
@@ -86,12 +86,12 @@ export default function UnlockPlayer({ postId, locked }: Props) {
   // Post verrouillé : demander le mot de passe
   return (
     <div style={{ display: "grid", gap: 8 }}>
-      <div style={{ color: "red", fontWeight: 700 }}>🔒 Mot de passe requis</div>
+      <div style={{ color: "red", fontWeight: 700 }}>🔒 Passcode required</div>
 
       <input
         value={passcode}
         onChange={(e) => setPasscode(e.target.value)}
-        placeholder="Mot de passe pour écouter"
+        placeholder="Passcode to listen"
         autoComplete="off"
         spellCheck={false}
       />
@@ -101,7 +101,7 @@ export default function UnlockPlayer({ postId, locked }: Props) {
         onClick={() => requestSignedUrl(passcode)}
         disabled={loading || passcode.trim().length === 0}
       >
-        {loading ? "Vérification…" : "Déverrouiller"}
+        {loading ? "Checking…" : "Unlock"}
       </button>
 
       {err && <div style={{ color: "crimson" }}>{err}</div>}

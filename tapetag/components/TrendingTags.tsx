@@ -17,12 +17,12 @@ export default function TrendingTags() {
         const r = await fetch("/api/trending-tags", { cache: "no-store" });
         const j = await r.json().catch(() => ({}));
         if (!r.ok) {
-          setErr(j?.error || "Impossible de charger les tendances.");
+          setErr(j?.error || "Unable to load trends.");
           return;
         }
         setItems(Array.isArray(j?.items) ? j.items : []);
       } catch (e: any) {
-        setErr(e?.message || "Erreur réseau.");
+        setErr(e?.message || "Network error.");
       }
     })();
   }, []);
@@ -33,7 +33,7 @@ export default function TrendingTags() {
       {err ? (
         <div className="tt-trends__empty">{err}</div>
       ) : items.length === 0 ? (
-        <div className="tt-trends__empty">Aucune tendance pour l’instant.</div>
+        <div className="tt-trends__empty">No trends yet.</div>
       ) : (
         <div className="tt-trends__grid">
           {items.map((t) => (

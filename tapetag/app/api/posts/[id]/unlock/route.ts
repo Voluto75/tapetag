@@ -45,7 +45,7 @@ export async function POST(
       const ok = await bcrypt.compare(passcode, post.passcode_hash);
       if (!ok) {
         return NextResponse.json(
-          { error: "Mot de passe incorrect" },
+          { error: "Incorrect passcode" },
           { status: 401 }
         );
       }

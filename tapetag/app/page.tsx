@@ -20,10 +20,7 @@ export default async function Home() {
           </div>
           <div className="tt-ad__content">
             <div className="tt-banner">
-              <img
-                src="https://images.unsplash.com/photo-1764178952787-b1afa76b570b?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1200"
-                alt="Neon city ad"
-              />
+              <img src="/ads/ad-left.jpg" alt="Neon city ad" />
             </div>
           </div>
         </div>
@@ -73,10 +70,7 @@ export default async function Home() {
           </div>
           <div className="tt-ad__content">
             <div className="tt-banner">
-              <img
-                src="https://images.unsplash.com/photo-1606053282513-502bcc590119?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1200"
-                alt="Neon tech ad"
-              />
+              <img src="/ads/ad-right.jpg" alt="Neon tech ad" />
             </div>
           </div>
         </div>
