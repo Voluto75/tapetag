@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import bcrypt from "bcryptjs";
 import { supabaseServer } from "@/lib/supabase-server";
 
 export async function POST(
-  req: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const url = new URL(req.url);
@@ -13,7 +13,8 @@ export async function POST(
     const idFromPath =
       postsIdx >= 0 && pathParts.length > postsIdx + 1 ? pathParts[postsIdx + 1] : null;
 
-    const postId = params?.id || idFromPath;
+    const { id } = await context.params;
+    const postId = id || idFromPath;
 
     if (!postId || postId === "undefined" || postId === "null") {
       return NextResponse.json({ error: "Missing post id" }, { status: 400 });
