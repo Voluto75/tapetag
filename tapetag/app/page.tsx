@@ -14,7 +14,18 @@ export default async function Home() {
       {/* LEFT AD */}
       <aside className="tt-ad tt-ad--left">
         <div className="tt-ad__inner">
-          AD SPACE
+          <div className="tt-ad__bar">
+            <div className="tt-ad__title">Sponsored</div>
+            <div className="tt-ad__badge">Ad</div>
+          </div>
+          <div className="tt-ad__content">
+            <div className="tt-banner">
+              <img
+                src="https://images.unsplash.com/photo-1764178952787-b1afa76b570b?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1200"
+                alt="Neon city ad"
+              />
+            </div>
+          </div>
         </div>
       </aside>
 
@@ -56,7 +67,18 @@ export default async function Home() {
       {/* RIGHT AD */}
       <aside className="tt-ad tt-ad--right">
         <div className="tt-ad__inner">
-          AD SPACE
+          <div className="tt-ad__bar">
+            <div className="tt-ad__title">Sponsored</div>
+            <div className="tt-ad__badge">Ad</div>
+          </div>
+          <div className="tt-ad__content">
+            <div className="tt-banner">
+              <img
+                src="https://images.unsplash.com/photo-1606053282513-502bcc590119?fm=jpg&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&ixlib=rb-4.1.0&q=60&w=1200"
+                alt="Neon tech ad"
+              />
+            </div>
+          </div>
         </div>
       </aside>
 
