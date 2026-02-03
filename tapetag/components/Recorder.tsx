@@ -149,6 +149,9 @@ export default function Recorder({ parentId }: { parentId?: string }) {
     setStatus("Publishing...");
 
     const fd = new FormData(e.currentTarget);
+    if (parentId) {
+      fd.set("parent_id", parentId);
+    }
     fd.set("audio", blob);
     fd.set("duration", String(shownSeconds));
 
