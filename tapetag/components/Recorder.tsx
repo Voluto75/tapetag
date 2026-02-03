@@ -1,8 +1,12 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function Recorder({ parentId }: { parentId?: string }) {
+  const searchParams = useSearchParams();
+  const parentIdFromUrl = searchParams.get("replyTo") || undefined;
+  const effectiveParentId = parentId || parentIdFromUrl;
   // anti double-start + anti anciens timers
   const runRef = useRef(0);
   const startLockRef = useRef(false);
@@ -149,8 +153,8 @@ export default function Recorder({ parentId }: { parentId?: string }) {
     setStatus("Publishing...");
 
     const fd = new FormData(e.currentTarget);
-    if (parentId) {
-      fd.set("parent_id", parentId);
+    if (effectiveParentId) {
+      fd.set("parent_id", effectiveParentId);
     }
     fd.set("audio", blob);
     fd.set("duration", String(shownSeconds));
@@ -210,8 +214,8 @@ export default function Recorder({ parentId }: { parentId?: string }) {
       )}
 
       <form onSubmit={publish} style={{ display: "grid", gap: 10 }}>
-        {parentId ? (
-          <input type="hidden" name="parent_id" value={parentId} />
+        {effectiveParentId ? (
+          <input type="hidden" name="parent_id" value={effectiveParentId} />
         ) : null}
         <input name="pseudonym" placeholder="Pseudonym" required />
         <input name="hashtag" placeholder="#hashtag" required />
