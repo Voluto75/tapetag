@@ -389,6 +389,59 @@ body::after {
 }
 
 /* =========================
+   Feed Mobile-First Layout
+   ========================= */
+.tt-feed {
+  display: grid;
+  gap: 12px;
+  padding: 0 8px 18px;
+}
+
+.tt-feed-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) repeat(5, auto);
+  gap: 8px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(11,15,20,0.45);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.tt-feed-control {
+  min-width: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(9,11,16,0.8);
+  color: white;
+}
+
+.tt-feed-action {
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(90,160,255,0.45);
+  background: rgba(50,120,255,0.2);
+  color: white;
+}
+
+.tt-feed-action--ghost {
+  border: 1px solid rgba(255,255,255,0.18);
+  background: transparent;
+}
+
+.tt-feed-grid {
+  display: grid;
+  gap: 17px;
+  grid-template-columns: 1fr;
+  justify-items: center;
+}
+
+.tt-feed-card {
+  width: min(100%, 312px);
+}
+
+/* =========================
    Home CTA button
    ========================= */
 .tt-newbtn--hero {
@@ -567,6 +620,24 @@ body::after {
 @media (max-width: 520px) {
   .tt-trends__grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 860px) {
+  .tt-feed-filters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .tt-feed-control--input {
+    grid-column: 1 / -1;
+  }
+
+  .tt-feed-action {
+    width: 100%;
+  }
+
+  .tt-feed-card {
+    width: min(100%, 92vw);
   }
 }
 

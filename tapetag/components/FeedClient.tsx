@@ -167,62 +167,34 @@ export default function FeedClient() {
   };
 
   return (
-    <div style={{ display: "grid", gap: 10 }}>
+    <div className="tt-feed">
       <form
+        className="tt-feed-filters"
         onSubmit={(e) => {
           e.preventDefault();
           loadFeed({ query, mode, sort, theme });
         }}
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr auto auto auto auto auto",
-          gap: 8,
-          alignItems: "center",
-          padding: 10,
-          borderRadius: 12,
-          background: "rgba(11,15,20,0.45)",
-          border: "1px solid rgba(255,255,255,0.12)",
-        }}
       >
         <input
+          className="tt-feed-control tt-feed-control--input"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={mode === "hashtag" ? "#hashtag" : "username"}
-          style={{
-            width: "100%",
-            padding: "10px 12px",
-            borderRadius: 10,
-            border: "1px solid rgba(255,255,255,0.18)",
-            background: "rgba(9,11,16,0.8)",
-            color: "white",
-          }}
         />
 
         <select
+          className="tt-feed-control"
           value={mode}
           onChange={(e) => setMode(e.target.value as "pseudonym" | "hashtag")}
-          style={{
-            padding: "10px 12px",
-            borderRadius: 10,
-            border: "1px solid rgba(255,255,255,0.18)",
-            background: "rgba(9,11,16,0.8)",
-            color: "white",
-          }}
         >
           <option value="pseudonym">Username</option>
           <option value="hashtag">Hashtag</option>
         </select>
 
         <select
+          className="tt-feed-control"
           value={theme}
           onChange={(e) => setTheme(e.target.value)}
-          style={{
-            padding: "10px 12px",
-            borderRadius: 10,
-            border: "1px solid rgba(255,255,255,0.18)",
-            background: "rgba(9,11,16,0.8)",
-            color: "white",
-          }}
         >
           <option value="all">All themes</option>
           <option value="politique">Politics</option>
@@ -237,21 +209,15 @@ export default function FeedClient() {
         </select>
 
         <select
+          className="tt-feed-control"
           value={sort}
           onChange={(e) => setSort(e.target.value as "top" | "recent")}
-          style={{
-            padding: "10px 12px",
-            borderRadius: 10,
-            border: "1px solid rgba(255,255,255,0.18)",
-            background: "rgba(9,11,16,0.8)",
-            color: "white",
-          }}
         >
           <option value="top">Most listened</option>
           <option value="recent">Most recent</option>
         </select>
 
-        <button className="tt-newbtn" type="submit" style={{ padding: "8px 12px" }}>
+        <button className="tt-feed-action" type="submit">
           Search
         </button>
 
@@ -263,13 +229,7 @@ export default function FeedClient() {
             setTheme("all");
             loadFeed({ query: "", mode: "pseudonym", sort, theme: "all" });
           }}
-          style={{
-            padding: "8px 12px",
-            borderRadius: 10,
-            border: "1px solid rgba(255,255,255,0.18)",
-            background: "transparent",
-            color: "white",
-          }}
+          className="tt-feed-action tt-feed-action--ghost"
         >
           Clear
         </button>
@@ -281,7 +241,7 @@ export default function FeedClient() {
         </div>
       )}
 
-      <div style={{ display: "grid", gap: 17, gridTemplateColumns: "1fr", justifyItems: "center" }}>
+      <div className="tt-feed-grid">
         {items.map((p) => (
         (() => {
           const theme = themeStyles[p.theme] || themeStyles["politique"];
@@ -289,12 +249,12 @@ export default function FeedClient() {
           const isOpen = !!openReplies[p.id];
           return (
         <article
+          className="tt-feed-card"
           key={p.id}
           style={{
             padding: 10,
             borderRadius: 14,
             aspectRatio: "1 / 1",
-            width: "min(100%, 312px)",
             overflow: "visible",
             position: "relative",
             display: "flex",
