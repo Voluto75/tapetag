@@ -52,16 +52,51 @@ export default function FeedClient() {
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const [query, setQuery] = useState("");
-  const [mode, setMode] = useState<"pseudonym" | "hashtag">("pseudonym");
-  const [sort, setSort] = useState<"top" | "recent">("top");
+  const [mode, setMode] = useState<"pseudonym" | "hashtag">("hashtag");
+  const [sort, setSort] = useState<"top" | "recent">("recent");
   const [theme, setTheme] = useState<string>("all");
   const [openReplies, setOpenReplies] = useState<Record<string, boolean>>({});
   const [stayHashtag, setStayHashtag] = useState<string | null>(initialTag);
   const [lastHashtagSearch, setLastHashtagSearch] = useState<string | null>(null);
   const [lastHashtagSearchHasResults, setLastHashtagSearchHasResults] = useState(false);
+  const [pinnedTags, setPinnedTags] = useState<string[]>([]);
   const [fxName, setFxName] = useState("wall-rain");
   const [fxActive, setFxActive] = useState(false);
   const [fxKey, setFxKey] = useState(0);
+
+  const activateHashtagEnvironment = (tag: string) => {
+    setQuery(tag);
+    setMode("hashtag");
+    setStayHashtag(tag);
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      url.searchParams.set("tag", tag.slice(1));
+      window.history.replaceState(null, "", url.toString());
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const raw = window.localStorage.getItem("tt_pinned_tags");
+    if (!raw) return;
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        const cleaned = parsed
+          .map((v) => normalizeHashtag(String(v)))
+          .filter((v): v is string => !!v)
+          .slice(0, 3);
+        setPinnedTags(cleaned);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem("tt_pinned_tags", JSON.stringify(pinnedTags.slice(0, 3)));
+  }, [pinnedTags]);
 
   useEffect(() => {
     const variants = ["wall-rain", "fireworks", "candy-rain", "emoji-rain", "strobe", "spark-wave"];
@@ -100,7 +135,7 @@ export default function FeedClient() {
   }) => {
     const q = (opts?.query ?? query).trim();
     const m = opts?.mode ?? mode;
-    const s = opts?.sort ?? "top";
+    const s = opts?.sort ?? sort;
     const t = opts?.theme ?? "all";
     const forcedTag = opts?.forceHashtag ?? null;
 
@@ -119,9 +154,7 @@ export default function FeedClient() {
       if (t !== "all") {
         params.set("theme", t);
       }
-      if (s === "recent") {
-        params.set("sort", "recent");
-      }
+      params.set("sort", s);
 
       const url = params.toString().length > 0 ? `/api/feed?${params}` : "/api/feed";
       const r = await fetch(url, { cache: "no-store" });
@@ -249,6 +282,13 @@ export default function FeedClient() {
     !!searchableTag &&
     searchableTag === lastHashtagSearch &&
     lastHashtagSearchHasResults;
+  const canPin =
+    !!searchableTag &&
+    mode === "hashtag" &&
+    searchableTag === lastHashtagSearch &&
+    lastHashtagSearchHasResults &&
+    !pinnedTags.includes(searchableTag) &&
+    pinnedTags.length < 3;
 
   return (
     <div className="tt-feed">
@@ -326,26 +366,58 @@ export default function FeedClient() {
       </form>
 
       {canStay ? (
-        <div style={{ position: "relative", zIndex: 20 }}>
+        <div style={{ position: "relative", zIndex: 20, display: "flex", gap: 8, alignItems: "center" }}>
           <button
             type="button"
             className="tt-feed-action"
             onClick={() => {
               if (!searchableTag) return;
-              setQuery(searchableTag);
-              setMode("hashtag");
-              setStayHashtag(searchableTag);
-              if (typeof window !== "undefined") {
-                const url = new URL(window.location.href);
-                url.searchParams.set("tag", searchableTag.slice(1));
-                window.history.replaceState(null, "", url.toString());
-              }
+              activateHashtagEnvironment(searchableTag);
             }}
           >
             stay
           </button>
+
+          {canPin ? (
+            <button
+              type="button"
+              className="tt-feed-action tt-feed-action--ghost"
+              onClick={() => {
+                if (!searchableTag) return;
+                setPinnedTags((prev) => {
+                  const next = [...prev, searchableTag].filter((v, i, arr) => arr.indexOf(v) === i);
+                  return next.slice(0, 3);
+                });
+              }}
+            >
+              pin hashtag
+            </button>
+          ) : null}
         </div>
       ) : null}
+
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+        <span style={{ fontSize: 12, opacity: 0.8 }}>Pinned:</span>
+        {pinnedTags.map((tag) => (
+          <div key={tag} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+            <button
+              type="button"
+              className="tt-feed-action"
+              onClick={() => activateHashtagEnvironment(tag)}
+            >
+              {tag}
+            </button>
+            <button
+              type="button"
+              className="tt-feed-action tt-feed-action--ghost"
+              onClick={() => setPinnedTags((prev) => prev.filter((t) => t !== tag))}
+            >
+              ×
+            </button>
+          </div>
+        ))}
+        {pinnedTags.length === 0 ? <span style={{ fontSize: 12, opacity: 0.65 }}>No pinned hashtag yet</span> : null}
+      </div>
 
       {stayHashtag ? (
         <div style={{ fontSize: 12, opacity: 0.9, display: "flex", alignItems: "center", gap: 10 }}>

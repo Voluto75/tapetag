@@ -43,27 +43,30 @@ export default function LikeButton({
   }
 
   return (
-    <button
-      type="button"
-      onClick={toggle}
-      aria-pressed={liked}
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        opacity: loading ? 0.7 : 1,
-        fontSize: 20,
-        lineHeight: 1,
-        color: "#ff2f4d",
-        background: "transparent",
-        border: "none",
-        padding: 0,
-        cursor: "pointer",
-        filter: "drop-shadow(0 0 10px rgba(255,47,77,0.7))",
-      }}
-      aria-label={`Like (${count})`}
-    >
-      <span style={{ color: liked ? "#ff2f4d" : "#ff2f4d" }}>♥</span>
-    </button>
+    <div style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+      <button
+        type="button"
+        onClick={toggle}
+        aria-pressed={liked}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          opacity: loading ? 0.7 : 1,
+          fontSize: 20,
+          lineHeight: 1,
+          color: "#ff2f4d",
+          background: "transparent",
+          border: "none",
+          padding: 0,
+          cursor: "pointer",
+          filter: "drop-shadow(0 0 10px rgba(255,47,77,0.7))",
+        }}
+        aria-label={`Like (${count})`}
+      >
+        <span style={{ color: "#ff2f4d" }}>♥</span>
+      </button>
+      <span style={{ fontSize: 12, opacity: 0.9 }}>{count}</span>
+    </div>
   );
 }

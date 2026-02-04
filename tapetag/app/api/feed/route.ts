@@ -42,10 +42,10 @@ export async function GET(req: Request) {
     .limit(50);
 
   const sort = rawSort.toLowerCase();
-  if (sort === "recent") {
-    q = q.order("created_at", { ascending: false });
-  } else {
+  if (sort === "top") {
     q = q.order("listen_count", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false });
+  } else {
+    q = q.order("created_at", { ascending: false });
   }
 
   if (rawTag) q = q.eq("hashtag", normalizeHashtag(rawTag));
