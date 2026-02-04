@@ -4,11 +4,13 @@ import { supabaseServer } from "@/lib/supabase-server";
 export async function GET() {
   try {
     const supabase = supabaseServer();
+    const nowIso = new Date().toISOString();
 
     const res = await supabase
       .from("voice_posts")
       .select("hashtag,status")
       .eq("status", "active")
+      .or(`expires_at.is.null,expires_at.gt.${nowIso}`)
       .limit(2000);
 
     if (res.error) {

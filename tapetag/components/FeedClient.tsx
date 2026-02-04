@@ -207,6 +207,12 @@ export default function FeedClient() {
   if (err) return <div style={{ padding: 12, color: "crimson" }}>{err}</div>;
 
   const themeStyles: Record<string, { border: string; glow: string; badge: string; fill: string }> = {
+    "no-theme": {
+      border: "#8ea1b8",
+      glow: "rgba(142,161,184,0.55)",
+      badge: "#d9e6ff",
+      fill: "rgba(110,126,146,0.5)",
+    },
     "politique": {
       border: "#7ad7ff",
       glow: "rgba(122,215,255,0.75)",
@@ -264,6 +270,7 @@ export default function FeedClient() {
   };
 
   const themeLabels: Record<string, string> = {
+    "no-theme": "no theme",
     "politique": "politics",
     "foot": "foot",
     "sex": "sex",
@@ -537,7 +544,12 @@ export default function FeedClient() {
             {p.caption ? <div style={{ opacity: 0.95, fontSize: 20 }}>{p.caption}</div> : null}
 
             <div style={{ marginTop: 2 }}>
-              <UnlockPlayer postId={String(p.id)} locked={!!p.locked} />
+              <UnlockPlayer
+                postId={String(p.id)}
+                locked={!!p.locked}
+                accentBorder={theme.border}
+                accentGlow={theme.glow}
+              />
             </div>
 
             <div style={{ marginTop: 2, fontSize: 17, opacity: 0.9 }}>
@@ -612,7 +624,12 @@ export default function FeedClient() {
                     {r.title ? <div style={{ marginTop: 4, fontSize: 17 }}>{r.title}</div> : null}
                     {r.caption ? <div style={{ marginTop: 4, opacity: 0.95, fontSize: 17 }}>{r.caption}</div> : null}
                     <div style={{ marginTop: 6 }}>
-                      <UnlockPlayer postId={String(r.id)} locked={!!r.locked} />
+                      <UnlockPlayer
+                        postId={String(r.id)}
+                        locked={!!r.locked}
+                        accentBorder={rt.border}
+                        accentGlow={rt.glow}
+                      />
                     </div>
                     <div style={{ marginTop: 4, fontSize: 16, opacity: 0.9 }}>
                       ⏱ {r.audio_duration_seconds}s · 🎧 {r.listen_count} listen{r.listen_count > 1 ? "s" : ""}

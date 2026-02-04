@@ -21,6 +21,7 @@ const schema = z.object({
   parent_id: z.string().uuid().optional().or(z.literal("")),
   title: z.string().max(80).optional().or(z.literal("")),
   caption: z.string().max(280).optional().or(z.literal("")),
+  expires_in_hours: z.coerce.number().int().min(1).max(168).optional().or(z.literal("")),
   duration: z.coerce.number().int().min(1).max(30),
 
   // ✅ nouveau : mot de passe optionnel
@@ -55,12 +56,17 @@ export async function POST(req: Request) {
       parent_id: form.get("parent_id") ?? "",
       title: form.get("title") ?? "",
       caption: form.get("caption"),
+      expires_in_hours: form.get("expires_in_hours") ?? "",
       duration: form.get("duration"),
       passcode: form.get("passcode"), // ✅ nouveau
     });
 
     const hashtag = normalizeHashtag(parsed.hashtag);
     const parent_post_id = parsed.parent_id ? parsed.parent_id : null;
+    const expires_at =
+      parsed.expires_in_hours === "" || parsed.expires_in_hours === undefined
+        ? null
+        : new Date(Date.now() + parsed.expires_in_hours * 60 * 60 * 1000).toISOString();
 
     // ✅ hash du mot de passe (optionnel)
     const passcodeRaw = (parsed.passcode || "").trim();
@@ -98,6 +104,7 @@ export async function POST(req: Request) {
         audio_path: storagePath, // ✅ on stocke le chemin Storage
         audio_duration_seconds: parsed.duration,
         passcode_hash, // ✅ nouveau
+        expires_at,
       })
       .select("id")
       .single();

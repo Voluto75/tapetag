@@ -387,6 +387,15 @@ export default function Recorder({ parentId, forcedTag }: { parentId?: string; f
           <option value="chipmunk">Voice FX: Chipmunk</option>
           <option value="robot">Voice FX: Robot</option>
         </select>
+        <select name="expires_in_hours" defaultValue="">
+          <option value="">Post expiry: never</option>
+          <option value="1">Post expiry: 1h</option>
+          <option value="2">Post expiry: 2h</option>
+          <option value="6">Post expiry: 6h</option>
+          <option value="12">Post expiry: 12h</option>
+          <option value="24">Post expiry: 24h</option>
+          <option value="48">Post expiry: 48h</option>
+        </select>
         <textarea name="caption" placeholder="Caption (optional)" />
         <input
         name="passcode"

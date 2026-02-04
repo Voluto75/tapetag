@@ -27,7 +27,7 @@ export async function POST(
 
     const { data: post, error } = await supabase
       .from("voice_posts")
-      .select("id,audio_path,passcode_hash,status,listen_count")
+      .select("id,audio_path,passcode_hash,status,listen_count,expires_at")
       .eq("id", postId)
       .single();
 
@@ -38,6 +38,13 @@ export async function POST(
 
     if (post.status !== "active") {
       console.log("UNLOCK inactive", { postId, status: post.status });
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
+    if (post.expires_at && new Date(post.expires_at).getTime() <= Date.now()) {
+      await supabase.from("post_likes").delete().eq("post_id", postId);
+      await supabase.from("voice_posts").delete().eq("id", postId);
+      await supabase.storage.from("voices").remove([post.audio_path]);
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
 

@@ -20,6 +20,27 @@ function escapeLike(input: string) {
   return input.replace(/[%_]/g, "\\$&");
 }
 
+async function purgeExpiredPosts(supabase: ReturnType<typeof supabaseServer>) {
+  const nowIso = new Date().toISOString();
+  const expired = await supabase
+    .from("voice_posts")
+    .select("id,audio_path")
+    .eq("status", "active")
+    .lt("expires_at", nowIso)
+    .limit(200);
+
+  if (expired.error || !expired.data || expired.data.length === 0) return;
+
+  const ids = expired.data.map((r: any) => r.id);
+  const audioPaths = expired.data.map((r: any) => r.audio_path).filter(Boolean);
+
+  await supabase.from("post_likes").delete().in("post_id", ids);
+  await supabase.from("voice_posts").delete().in("id", ids);
+  if (audioPaths.length > 0) {
+    await supabase.storage.from("voices").remove(audioPaths);
+  }
+}
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const rawTag = searchParams.get("tag");
@@ -29,6 +50,8 @@ export async function GET(req: Request) {
   const rawTheme = searchParams.get("theme") || "";
 
   const supabase = supabaseServer();
+  const nowIso = new Date().toISOString();
+  await purgeExpiredPosts(supabase);
 
   // ✅ On inclut passcode_hash uniquement pour calculer locked,
   // mais on ne le renvoie pas au client.
@@ -38,6 +61,7 @@ export async function GET(req: Request) {
       "id,pseudonym,hashtag,theme,title,caption,audio_duration_seconds,created_at,status,passcode_hash,listen_count,parent_post_id"
     )
     .eq("status", "active")
+    .or(`expires_at.is.null,expires_at.gt.${nowIso}`)
     .is("parent_post_id", null)
     .limit(50);
 
@@ -121,6 +145,7 @@ export async function GET(req: Request) {
         "id,pseudonym,hashtag,theme,title,caption,audio_duration_seconds,created_at,status,passcode_hash,listen_count,parent_post_id"
       )
       .eq("status", "active")
+      .or(`expires_at.is.null,expires_at.gt.${nowIso}`)
       .in("parent_post_id", ids)
       .order("created_at", { ascending: true });
 
