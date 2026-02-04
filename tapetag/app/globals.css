@@ -441,6 +441,118 @@ body::after {
   width: min(100%, 312px);
 }
 
+.tt-feed-stage {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.tt-feed-stage__content {
+  position: relative;
+  z-index: 2;
+}
+
+.tt-feed-fx {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 6;
+  mix-blend-mode: screen;
+}
+
+.tt-feed-fx--active {
+  opacity: 0.85;
+}
+
+.tt-feed-fx--wall-rain {
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(120, 255, 190, 0) 0 6px,
+      rgba(120, 255, 190, 0.28) 6px 8px,
+      rgba(120, 255, 190, 0) 8px 14px
+    );
+  animation: ttWallRain 3s linear forwards;
+}
+
+.tt-feed-fx--fireworks {
+  background:
+    radial-gradient(circle at 20% 70%, rgba(255,120,200,0.65) 0 8%, transparent 10%),
+    radial-gradient(circle at 50% 40%, rgba(120,220,255,0.65) 0 8%, transparent 10%),
+    radial-gradient(circle at 80% 68%, rgba(255,200,90,0.7) 0 8%, transparent 10%);
+  animation: ttFireworks 3s ease-out forwards;
+}
+
+.tt-feed-fx--candy-rain {
+  background:
+    radial-gradient(circle at 10% 0%, rgba(255,120,200,0.75) 0 7px, transparent 8px),
+    radial-gradient(circle at 30% 0%, rgba(255,210,110,0.75) 0 7px, transparent 8px),
+    radial-gradient(circle at 50% 0%, rgba(120,255,180,0.75) 0 7px, transparent 8px),
+    radial-gradient(circle at 70% 0%, rgba(130,190,255,0.75) 0 7px, transparent 8px),
+    radial-gradient(circle at 90% 0%, rgba(210,140,255,0.75) 0 7px, transparent 8px);
+  background-repeat: repeat-y;
+  background-size: 100% 28px;
+  animation: ttCandyRain 3s linear forwards;
+}
+
+.tt-feed-fx--emoji-rain::before {
+  content: "😀 😎 🤘 🔥 💬 ✨ 🎉 💖 🫧 🎧 😀 😎 🤘 🔥 💬 ✨ 🎉 💖 🫧 🎧";
+  position: absolute;
+  inset: -10% 0 auto 0;
+  font-size: clamp(16px, 2vw, 24px);
+  letter-spacing: 8px;
+  white-space: nowrap;
+  opacity: 0.9;
+  animation: ttEmojiRain 3s linear forwards;
+}
+
+.tt-feed-fx--strobe {
+  background: rgba(255,255,255,0.9);
+  mix-blend-mode: screen;
+  animation: ttStrobe 3s steps(1, end) forwards;
+}
+
+.tt-feed-fx--spark-wave {
+  background:
+    linear-gradient(120deg, transparent 0 42%, rgba(140,220,255,0.75) 48%, transparent 54%),
+    linear-gradient(60deg, transparent 0 42%, rgba(255,120,200,0.5) 50%, transparent 58%);
+  animation: ttSparkWave 3s ease-in-out forwards;
+}
+
+@keyframes ttWallRain {
+  from { background-position: 0 0; opacity: 0.95; }
+  to { background-position: 0 180px; opacity: 0; }
+}
+
+@keyframes ttFireworks {
+  0% { transform: scale(0.5); opacity: 0; }
+  30% { transform: scale(1); opacity: 0.95; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+@keyframes ttCandyRain {
+  from { background-position: 0 -40px; opacity: 0.9; }
+  to { background-position: 0 230px; opacity: 0; }
+}
+
+@keyframes ttEmojiRain {
+  from { transform: translateY(-20%); opacity: 0.95; }
+  to { transform: translateY(240%); opacity: 0; }
+}
+
+@keyframes ttStrobe {
+  0%, 20%, 40%, 60%, 80% { opacity: 0.7; }
+  10%, 30%, 50%, 70%, 90% { opacity: 0.05; }
+  100% { opacity: 0; }
+}
+
+@keyframes ttSparkWave {
+  0% { transform: translateX(-35%) scale(0.9); opacity: 0.85; }
+  60% { transform: translateX(20%) scale(1); opacity: 0.9; }
+  100% { transform: translateX(45%) scale(1.04); opacity: 0; }
+}
+
 /* =========================
    Home CTA button
    ========================= */

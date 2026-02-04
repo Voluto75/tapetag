@@ -3,10 +3,137 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function Recorder({ parentId }: { parentId?: string }) {
+type VoiceFx = "none" | "autotune-lite" | "deep" | "chipmunk" | "robot";
+
+function audioBufferToWavBlob(buffer: AudioBuffer) {
+  const channels = buffer.numberOfChannels;
+  const sampleRate = buffer.sampleRate;
+  const length = buffer.length;
+  const bytesPerSample = 2;
+  const blockAlign = channels * bytesPerSample;
+  const byteRate = sampleRate * blockAlign;
+  const dataSize = length * blockAlign;
+  const wavSize = 44 + dataSize;
+  const ab = new ArrayBuffer(wavSize);
+  const view = new DataView(ab);
+
+  let offset = 0;
+  const writeString = (s: string) => {
+    for (let i = 0; i < s.length; i++) view.setUint8(offset++, s.charCodeAt(i));
+  };
+
+  writeString("RIFF");
+  view.setUint32(offset, wavSize - 8, true);
+  offset += 4;
+  writeString("WAVE");
+  writeString("fmt ");
+  view.setUint32(offset, 16, true);
+  offset += 4;
+  view.setUint16(offset, 1, true);
+  offset += 2;
+  view.setUint16(offset, channels, true);
+  offset += 2;
+  view.setUint32(offset, sampleRate, true);
+  offset += 4;
+  view.setUint32(offset, byteRate, true);
+  offset += 4;
+  view.setUint16(offset, blockAlign, true);
+  offset += 2;
+  view.setUint16(offset, 16, true);
+  offset += 2;
+  writeString("data");
+  view.setUint32(offset, dataSize, true);
+  offset += 4;
+
+  const channelData: Float32Array[] = [];
+  for (let c = 0; c < channels; c++) channelData.push(buffer.getChannelData(c));
+  for (let i = 0; i < length; i++) {
+    for (let c = 0; c < channels; c++) {
+      const s = Math.max(-1, Math.min(1, channelData[c][i]));
+      view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+      offset += 2;
+    }
+  }
+  return new Blob([ab], { type: "audio/wav" });
+}
+
+async function applyVoiceEffect(input: Blob, fx: VoiceFx): Promise<Blob> {
+  if (fx === "none") return input;
+
+  const AC = window.AudioContext || (window as any).webkitAudioContext;
+  const ctx = new AC();
+  const arr = await input.arrayBuffer();
+  const decoded = await ctx.decodeAudioData(arr.slice(0));
+
+  let rate = 1;
+  if (fx === "autotune-lite") rate = 1.1;
+  if (fx === "deep") rate = 0.86;
+  if (fx === "chipmunk") rate = 1.28;
+
+  const outLength = Math.ceil(decoded.length / rate) + Math.floor(decoded.sampleRate * 0.05);
+  const offline = new OfflineAudioContext(decoded.numberOfChannels, outLength, decoded.sampleRate);
+
+  const source = offline.createBufferSource();
+  source.buffer = decoded;
+  source.playbackRate.value = rate;
+
+  const high = offline.createBiquadFilter();
+  high.type = "highpass";
+  high.frequency.value = fx === "deep" ? 70 : 120;
+
+  const low = offline.createBiquadFilter();
+  low.type = "lowpass";
+  low.frequency.value = fx === "chipmunk" ? 8000 : 6400;
+
+  const tone = offline.createBiquadFilter();
+  tone.type = "peaking";
+  tone.frequency.value = fx === "autotune-lite" ? 2200 : 1100;
+  tone.Q.value = 1.8;
+  tone.gain.value = fx === "autotune-lite" ? 7 : 3;
+
+  const comp = offline.createDynamicsCompressor();
+  comp.threshold.value = -24;
+  comp.knee.value = 20;
+  comp.ratio.value = 3.5;
+  comp.attack.value = 0.004;
+  comp.release.value = 0.18;
+
+  source.connect(high);
+  high.connect(low);
+  low.connect(tone);
+
+  if (fx === "robot") {
+    const crush = offline.createWaveShaper();
+    const curve = new Float32Array(256);
+    for (let i = 0; i < 256; i++) {
+      const x = (i / 255) * 2 - 1;
+      curve[i] = Math.sign(x) * Math.pow(Math.abs(x), 0.45);
+    }
+    crush.curve = curve;
+    crush.oversample = "4x";
+    tone.connect(crush);
+    crush.connect(comp);
+  } else {
+    tone.connect(comp);
+  }
+
+  comp.connect(offline.destination);
+  source.start(0);
+
+  const rendered = await offline.startRendering();
+  ctx.close();
+  return audioBufferToWavBlob(rendered);
+}
+
+export default function Recorder({ parentId, forcedTag }: { parentId?: string; forcedTag?: string }) {
   const searchParams = useSearchParams();
   const parentIdFromUrl = searchParams.get("replyTo") || undefined;
+  const forcedTagFromUrl = searchParams.get("tag") || undefined;
   const effectiveParentId = parentId || parentIdFromUrl;
+  const effectiveTagRaw = (forcedTag || forcedTagFromUrl || "").trim();
+  const effectiveTag = effectiveTagRaw
+    ? (effectiveTagRaw.startsWith("#") ? effectiveTagRaw : `#${effectiveTagRaw}`).toLowerCase()
+    : "";
   // anti double-start + anti anciens timers
   const runRef = useRef(0);
   const startLockRef = useRef(false);
@@ -25,6 +152,13 @@ export default function Recorder({ parentId }: { parentId?: string }) {
   const [duration, setDuration] = useState(0);
   const [status, setStatus] = useState("");
   const [blink, setBlink] = useState(true);
+  const [voiceFx, setVoiceFx] = useState<VoiceFx>("autotune-lite");
+  const [hashtagValue, setHashtagValue] = useState(effectiveTag);
+
+  useEffect(() => {
+    if (!effectiveTag) return;
+    setHashtagValue(effectiveTag);
+  }, [effectiveTag]);
 
   const shownSeconds = Math.min(30, Math.max(0, Number(duration) || 0));
 
@@ -152,14 +286,21 @@ export default function Recorder({ parentId }: { parentId?: string }) {
 
     setStatus("Publishing...");
 
-    const fd = new FormData(e.currentTarget);
-    if (effectiveParentId) {
-      fd.set("parent_id", effectiveParentId);
-    }
-    fd.set("audio", blob);
-    fd.set("duration", String(shownSeconds));
-
     try {
+      const fd = new FormData(e.currentTarget);
+      if (effectiveParentId) {
+        fd.set("parent_id", effectiveParentId);
+      }
+
+      let audioBlob = blob;
+      if (voiceFx !== "none") {
+        setStatus("Applying voice effect...");
+        audioBlob = await applyVoiceEffect(blob, voiceFx);
+      }
+
+      fd.set("audio", audioBlob, "voice.wav");
+      fd.set("duration", String(shownSeconds));
+
       const res = await fetch("/api/posts", { method: "POST", body: fd });
       const data = await res.json().catch(() => null);
 
@@ -169,6 +310,7 @@ export default function Recorder({ parentId }: { parentId?: string }) {
       setBlob(null);
       setDuration(0);
       (e.target as HTMLFormElement).reset();
+      setHashtagValue(effectiveTag || "");
     } catch (err: any) {
       setStatus(err?.message ?? "Publish failed");
     }
@@ -218,7 +360,14 @@ export default function Recorder({ parentId }: { parentId?: string }) {
           <input type="hidden" name="parent_id" value={effectiveParentId} />
         ) : null}
         <input name="pseudonym" placeholder="Pseudonym" required />
-        <input name="hashtag" placeholder="#hashtag" required />
+        <input
+          name="hashtag"
+          placeholder="#hashtag"
+          required
+          value={hashtagValue}
+          onChange={(e) => setHashtagValue(e.target.value)}
+          readOnly={!!effectiveTag}
+        />
         <select name="theme" defaultValue="politique" required>
           <option value="politique">Politics (light blue)</option>
           <option value="foot">Foot (green)</option>
@@ -229,6 +378,13 @@ export default function Recorder({ parentId }: { parentId?: string }) {
           <option value="jeux-video">Video games (gray)</option>
           <option value="informatique">Tech (black)</option>
           <option value="nature">Nature (off-white)</option>
+        </select>
+        <select value={voiceFx} onChange={(e) => setVoiceFx(e.target.value as VoiceFx)}>
+          <option value="none">Voice FX: none</option>
+          <option value="autotune-lite">Voice FX: AutoTune lite</option>
+          <option value="deep">Voice FX: Deep</option>
+          <option value="chipmunk">Voice FX: Chipmunk</option>
+          <option value="robot">Voice FX: Robot</option>
         </select>
         <textarea name="caption" placeholder="Caption (optional)" />
         <input

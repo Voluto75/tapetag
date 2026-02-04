@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 type Props = {
   postId: string;
@@ -12,6 +12,8 @@ export default function UnlockPlayer({ postId, locked }: Props) {
   const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
+  const [autoplayRequested, setAutoplayRequested] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   if (!postId || postId === "undefined" || postId === "null") {
     return <div style={{ color: "crimson" }}>Post not found (missing id).</div>;
@@ -20,6 +22,7 @@ export default function UnlockPlayer({ postId, locked }: Props) {
   async function requestSignedUrl(code: string) {
     setLoading(true);
     setErr("");
+    setAutoplayRequested(true);
 
     try {
       const r = await fetch(`/api/posts/${postId}/unlock`, {
@@ -51,17 +54,28 @@ export default function UnlockPlayer({ postId, locked }: Props) {
     }
   }
 
+  useEffect(() => {
+    if (!signedUrl || !autoplayRequested) return;
+    const a = audioRef.current;
+    if (!a) return;
+    a.play().catch(() => {
+      // Some browsers can still block autoplay; controls remain available.
+    });
+    setAutoplayRequested(false);
+  }, [signedUrl, autoplayRequested]);
+
   // Déjà déverrouillé -> on joue l’audio
   if (signedUrl) {
     return (
       <div style={{ display: "grid", gap: 8 }}>
-        <audio controls src={signedUrl} />
+        <audio ref={audioRef} controls autoPlay playsInline src={signedUrl} />
         <button
           type="button"
           onClick={() => {
             // optionnel : si tu veux re-demander une URL (expirée)
             setSignedUrl(null);
             setErr("");
+            setAutoplayRequested(false);
           }}
           style={{
             opacity: 0.9,

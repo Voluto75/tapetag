@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import UnlockPlayer from "@/components/UnlockPlayer";
 import LikeButton from "@/components/LikeButton";
+import TrendingTags from "@/components/TrendingTags";
 
 type FeedItem = {
   id: string;
@@ -35,6 +36,18 @@ type ReplyItem = {
 };
 
 export default function FeedClient() {
+  const normalizeHashtag = (input: string) => {
+    const raw = input.trim().replace(/^#/, "").toLowerCase();
+    if (!raw) return null;
+    const cleaned = raw.replace(/[^a-z0-9_]/g, "");
+    return cleaned ? `#${cleaned}` : null;
+  };
+
+  const initialTag =
+    typeof window !== "undefined"
+      ? normalizeHashtag(new URLSearchParams(window.location.search).get("tag") || "")
+      : null;
+
   const [items, setItems] = useState<FeedItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
@@ -43,24 +56,63 @@ export default function FeedClient() {
   const [sort, setSort] = useState<"top" | "recent">("top");
   const [theme, setTheme] = useState<string>("all");
   const [openReplies, setOpenReplies] = useState<Record<string, boolean>>({});
+  const [stayHashtag, setStayHashtag] = useState<string | null>(initialTag);
+  const [lastHashtagSearch, setLastHashtagSearch] = useState<string | null>(null);
+  const [lastHashtagSearchHasResults, setLastHashtagSearchHasResults] = useState(false);
+  const [fxName, setFxName] = useState("wall-rain");
+  const [fxActive, setFxActive] = useState(false);
+  const [fxKey, setFxKey] = useState(0);
+
+  useEffect(() => {
+    const variants = ["wall-rain", "fireworks", "candy-rain", "emoji-rain", "strobe", "spark-wave"];
+    let last = -1;
+    let hideTimer: number | null = null;
+
+    const triggerFx = () => {
+      let idx = Math.floor(Math.random() * variants.length);
+      if (idx === last) idx = (idx + 1) % variants.length;
+      last = idx;
+
+      setFxName(variants[idx]);
+      setFxKey((k) => k + 1);
+      setFxActive(true);
+
+      if (hideTimer) window.clearTimeout(hideTimer);
+      hideTimer = window.setTimeout(() => setFxActive(false), 3000);
+    };
+
+    const first = window.setTimeout(triggerFx, 1000);
+    const loop = window.setInterval(triggerFx, 20000);
+
+    return () => {
+      window.clearTimeout(first);
+      window.clearInterval(loop);
+      if (hideTimer) window.clearTimeout(hideTimer);
+    };
+  }, []);
 
   const loadFeed = async (opts?: {
     query?: string;
     mode?: "pseudonym" | "hashtag";
     sort?: "top" | "recent";
     theme?: string;
+    forceHashtag?: string | null;
   }) => {
-    const q = (opts?.query ?? "").trim();
-    const m = opts?.mode ?? "pseudonym";
+    const q = (opts?.query ?? query).trim();
+    const m = opts?.mode ?? mode;
     const s = opts?.sort ?? "top";
     const t = opts?.theme ?? "all";
+    const forcedTag = opts?.forceHashtag ?? null;
 
     try {
       setLoading(true);
       setErr("");
 
       const params = new URLSearchParams();
-      if (q.length > 0) {
+      if (forcedTag) {
+        params.set("q", forcedTag);
+        params.set("mode", "hashtag");
+      } else if (q.length > 0) {
         params.set("q", q);
         params.set("mode", m);
       }
@@ -81,7 +133,17 @@ export default function FeedClient() {
         return;
       }
 
-      setItems(Array.isArray(j?.items) ? j.items : []);
+      const loadedItems = Array.isArray(j?.items) ? j.items : [];
+      setItems(loadedItems);
+
+      if (!forcedTag && m === "hashtag" && q.length > 0) {
+        const normalized = normalizeHashtag(q);
+        setLastHashtagSearch(normalized);
+        setLastHashtagSearchHasResults(loadedItems.length > 0);
+      } else if (!forcedTag) {
+        setLastHashtagSearch(null);
+        setLastHashtagSearchHasResults(false);
+      }
     } catch (e: any) {
       setErr(e?.message || "Network error.");
       setItems([]);
@@ -91,8 +153,22 @@ export default function FeedClient() {
   };
 
   useEffect(() => {
-    loadFeed({ sort, theme });
-  }, [sort, theme]);
+    loadFeed({ sort, theme, forceHashtag: stayHashtag });
+  }, [sort, theme, stayHashtag]);
+
+  useEffect(() => {
+    if (!stayHashtag) return;
+    setMode("hashtag");
+    setQuery(stayHashtag);
+  }, [stayHashtag]);
+
+  useEffect(() => {
+    if (!stayHashtag) return;
+    const id = window.setInterval(() => {
+      loadFeed({ sort, theme, forceHashtag: stayHashtag });
+    }, 10000);
+    return () => window.clearInterval(id);
+  }, [stayHashtag, sort, theme]);
 
   if (loading) return <div style={{ padding: 12, opacity: 0.8 }}>Loading…</div>;
   if (err) return <div style={{ padding: 12, color: "crimson" }}>{err}</div>;
@@ -166,20 +242,28 @@ export default function FeedClient() {
     "nature": "nature",
   };
 
+  const searchableTag = mode === "hashtag" ? normalizeHashtag(query) : null;
+  const canStay =
+    !stayHashtag &&
+    mode === "hashtag" &&
+    !!searchableTag &&
+    searchableTag === lastHashtagSearch &&
+    lastHashtagSearchHasResults;
+
   return (
     <div className="tt-feed">
       <form
         className="tt-feed-filters"
         onSubmit={(e) => {
           e.preventDefault();
-          loadFeed({ query, mode, sort, theme });
+          loadFeed({ query, mode, sort, theme, forceHashtag: stayHashtag });
         }}
       >
         <input
           className="tt-feed-control tt-feed-control--input"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={mode === "hashtag" ? "#hashtag" : "username"}
+          placeholder={mode === "hashtag" ? "#hashtag" : "pseuso"}
         />
 
         <select
@@ -187,7 +271,7 @@ export default function FeedClient() {
           value={mode}
           onChange={(e) => setMode(e.target.value as "pseudonym" | "hashtag")}
         >
-          <option value="pseudonym">Username</option>
+          <option value="pseudonym">Pseudo</option>
           <option value="hashtag">Hashtag</option>
         </select>
 
@@ -227,7 +311,13 @@ export default function FeedClient() {
             setQuery("");
             setMode("pseudonym");
             setTheme("all");
-            loadFeed({ query: "", mode: "pseudonym", sort, theme: "all" });
+            setStayHashtag(null);
+            if (typeof window !== "undefined") {
+              const url = new URL(window.location.href);
+              url.searchParams.delete("tag");
+              window.history.replaceState(null, "", url.toString());
+            }
+            loadFeed({ query: "", mode: "pseudonym", sort, theme: "all", forceHashtag: null });
           }}
           className="tt-feed-action tt-feed-action--ghost"
         >
@@ -235,14 +325,69 @@ export default function FeedClient() {
         </button>
       </form>
 
-      {items.length === 0 && (
-        <div style={{ padding: 12, opacity: 0.8 }}>
-          {query.trim().length > 0 ? "No results for this search." : "No posts yet."}
+      {canStay ? (
+        <div style={{ position: "relative", zIndex: 20 }}>
+          <button
+            type="button"
+            className="tt-feed-action"
+            onClick={() => {
+              if (!searchableTag) return;
+              setQuery(searchableTag);
+              setMode("hashtag");
+              setStayHashtag(searchableTag);
+              if (typeof window !== "undefined") {
+                const url = new URL(window.location.href);
+                url.searchParams.set("tag", searchableTag.slice(1));
+                window.history.replaceState(null, "", url.toString());
+              }
+            }}
+          >
+            stay
+          </button>
         </div>
-      )}
+      ) : null}
 
-      <div className="tt-feed-grid">
-        {items.map((p) => (
+      {stayHashtag ? (
+        <div style={{ fontSize: 12, opacity: 0.9, display: "flex", alignItems: "center", gap: 10 }}>
+          <span>Staying in hashtag environment: {stayHashtag}</span>
+          <button
+            type="button"
+            className="tt-feed-action tt-feed-action--ghost"
+            onClick={() => {
+              setStayHashtag(null);
+              if (typeof window !== "undefined") {
+                const url = new URL(window.location.href);
+                url.searchParams.delete("tag");
+                window.history.replaceState(null, "", url.toString());
+              }
+              loadFeed({ query: "", mode: "pseudonym", sort, theme, forceHashtag: null });
+            }}
+          >
+            exit hashtag
+          </button>
+          <a className="tt-feed-action" href={`/new?tag=${encodeURIComponent(stayHashtag.slice(1))}`}>
+            post in {stayHashtag}
+          </a>
+        </div>
+      ) : null}
+
+      <div className="tt-feed-stage">
+        <div
+          key={fxKey}
+          className={`tt-feed-fx ${fxActive ? `tt-feed-fx--active tt-feed-fx--${fxName}` : ""}`}
+        />
+
+        <div className="tt-feed-stage__content">
+          <TrendingTags />
+
+          {items.length === 0 && (
+            <div style={{ padding: 12, opacity: 0.8 }}>
+              {query.trim().length > 0 ? "No results for this search." : "No posts yet."}
+            </div>
+          )}
+
+          <div className="tt-feed-grid">
+            {items.map((p) => (
         (() => {
           const theme = themeStyles[p.theme] || themeStyles["politique"];
           const replies = p.replies ?? [];
@@ -326,6 +471,9 @@ export default function FeedClient() {
             <div style={{ marginTop: 2, fontSize: 17, opacity: 0.9 }}>
               ⏱ {p.audio_duration_seconds}s · 🎧 {p.listen_count} listen{p.listen_count > 1 ? "s" : ""}
             </div>
+            <div style={{ fontSize: 10, opacity: 0.72 }}>
+              🗓 {new Date(p.created_at).toLocaleDateString()} · {new Date(p.created_at).toLocaleTimeString()}
+            </div>
 
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <a
@@ -389,6 +537,9 @@ export default function FeedClient() {
                     <div style={{ marginTop: 4, fontSize: 16, opacity: 0.9 }}>
                       ⏱ {r.audio_duration_seconds}s · 🎧 {r.listen_count} listen{r.listen_count > 1 ? "s" : ""}
                     </div>
+                    <div style={{ fontSize: 9, opacity: 0.7 }}>
+                      🗓 {new Date(r.created_at).toLocaleDateString()} · {new Date(r.created_at).toLocaleTimeString()}
+                    </div>
                   </div>
                 );
               })}
@@ -398,6 +549,8 @@ export default function FeedClient() {
           );
         })()
       ))}
+          </div>
+        </div>
       </div>
     </div>
   );

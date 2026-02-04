@@ -1,7 +1,6 @@
 
 import FeedClient from "@/components/FeedClient";
 import HeroBanner from "@/components/HeroBanner";
-import TrendingTags from "@/components/TrendingTags";
 
 export default async function Home() {
 
@@ -42,9 +41,18 @@ export default async function Home() {
     gap: 12,
   }}
 >
-  <span className="tt-appname" style={{ justifySelf: "start" }}>
-    TapeTag
-    <span style={{ marginLeft: 8, fontSize: "0.25em", opacity: 0.75 }}>raw</span>
+  <span
+    className="tt-appname"
+    style={{
+      justifySelf: "start",
+      color: "transparent",
+      background: "linear-gradient(90deg, #5bb8ff, #ff6fb7, #ffb366)",
+      WebkitBackgroundClip: "text",
+      backgroundClip: "text",
+      textShadow: "none",
+    }}
+  >
+    TAPETAG <span style={{ fontSize: "0.6em" }}>raw</span>
   </span>
 
   <span />
@@ -52,26 +60,24 @@ export default async function Home() {
 </header>
         {/* HERO */}
         <HeroBanner text="">
-          <div style={{ display: "grid", gap: 20, justifyItems: "center" }}>
+          <div style={{ display: "grid", gap: 20, justifyItems: "center", width: "100%", textAlign: "center" }}>
             <span
               style={{
                 fontSize: "clamp(10px, 3.2vw, 22px)",
                 lineHeight: 1,
                 margin: 0,
                 fontFamily: "\"Tahoma\", \"MS Sans Serif\", \"Verdana\", system-ui, Arial",
-                color: "#9ad8ff",
-                textShadow:
-                  "0 0 8px rgba(100,190,255,0.9), 0 0 18px rgba(90,170,255,0.8), 0 0 30px rgba(50,130,255,0.75)",
+                fontWeight: 400,
+                color: "#ffffff",
+                textShadow: "none",
                 letterSpacing: "0.03em",
               }}
             >
-              Drop opinion, gossip, thought...whatever
+              Drop opinions, gossips, secret message with lock...
             </span>
             <a className="tt-newbtn--hero" href="/new">+ NEW TAPE</a>
           </div>
         </HeroBanner>
-
-        <TrendingTags />
 
 <FeedClient />
 

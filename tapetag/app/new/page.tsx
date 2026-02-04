@@ -2,8 +2,9 @@ import Recorder from "@/components/Recorder";
 
 export const dynamic = "force-dynamic";
 
-export default function NewPostPage({ searchParams }: { searchParams?: { replyTo?: string } }) {
+export default function NewPostPage({ searchParams }: { searchParams?: { replyTo?: string; tag?: string } }) {
   const replyTo = searchParams?.replyTo;
+  const forcedTag = searchParams?.tag;
   return (
     <main
       style={{
@@ -65,7 +66,7 @@ export default function NewPostPage({ searchParams }: { searchParams?: { replyTo
           Keep it anonymous — or don't. Feel free.
         </p>
 
-        <Recorder parentId={replyTo} />
+        <Recorder parentId={replyTo} forcedTag={forcedTag} />
       </section>
     </main>
   );
