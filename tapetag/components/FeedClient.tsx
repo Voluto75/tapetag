@@ -100,57 +100,57 @@ export default function FeedClient() {
   const themeStyles: Record<string, { border: string; glow: string; badge: string; fill: string }> = {
     "politique": {
       border: "#7ad7ff",
-      glow: "rgba(122,215,255,0.25)",
+      glow: "rgba(122,215,255,0.75)",
       badge: "#7ad7ff",
-      fill: "rgba(122,215,255,0.12)",
+      fill: "rgba(122,215,255,0.58)",
     },
     "foot": {
       border: "#78ffb0",
-      glow: "rgba(120,255,176,0.25)",
+      glow: "rgba(120,255,176,0.75)",
       badge: "#78ffb0",
-      fill: "rgba(120,255,176,0.12)",
+      fill: "rgba(120,255,176,0.58)",
     },
     "sex": {
       border: "#ff77c8",
-      glow: "rgba(255,119,200,0.25)",
+      glow: "rgba(255,119,200,0.75)",
       badge: "#ff77c8",
-      fill: "rgba(255,119,200,0.12)",
+      fill: "rgba(255,119,200,0.58)",
     },
     "nourriture": {
       border: "#ffd86b",
-      glow: "rgba(255,216,107,0.25)",
+      glow: "rgba(255,216,107,0.75)",
       badge: "#ffd86b",
-      fill: "rgba(255,216,107,0.12)",
+      fill: "rgba(255,216,107,0.58)",
     },
     "business": {
       border: "#2b3a8f",
-      glow: "rgba(43,58,143,0.35)",
+      glow: "rgba(43,58,143,0.85)",
       badge: "#98a4ff",
-      fill: "rgba(43,58,143,0.22)",
+      fill: "rgba(43,58,143,0.72)",
     },
     "autre-sport": {
       border: "#b682ff",
-      glow: "rgba(182,130,255,0.25)",
+      glow: "rgba(182,130,255,0.75)",
       badge: "#b682ff",
-      fill: "rgba(182,130,255,0.12)",
+      fill: "rgba(182,130,255,0.58)",
     },
     "jeux-video": {
       border: "#b6b6b6",
-      glow: "rgba(182,182,182,0.18)",
+      glow: "rgba(182,182,182,0.6)",
       badge: "#b6b6b6",
-      fill: "rgba(182,182,182,0.12)",
+      fill: "rgba(182,182,182,0.5)",
     },
     "informatique": {
       border: "#0d0d0d",
-      glow: "rgba(0,0,0,0.45)",
+      glow: "rgba(0,0,0,0.8)",
       badge: "#7cffb7",
-      fill: "rgba(0,0,0,0.45)",
+      fill: "rgba(0,0,0,0.8)",
     },
     "nature": {
       border: "#f3f0e6",
-      glow: "rgba(243,240,230,0.2)",
+      glow: "rgba(243,240,230,0.65)",
       badge: "#f3f0e6",
-      fill: "rgba(243,240,230,0.16)",
+      fill: "rgba(243,240,230,0.56)",
     },
   };
 
@@ -167,7 +167,7 @@ export default function FeedClient() {
   };
 
   return (
-    <div style={{ display: "grid", gap: 12 }}>
+    <div style={{ display: "grid", gap: 10 }}>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -281,7 +281,8 @@ export default function FeedClient() {
         </div>
       )}
 
-      {items.map((p) => (
+      <div style={{ display: "grid", gap: 17, gridTemplateColumns: "1fr", justifyItems: "center" }}>
+        {items.map((p) => (
         (() => {
           const theme = themeStyles[p.theme] || themeStyles["politique"];
           const replies = p.replies ?? [];
@@ -290,84 +291,116 @@ export default function FeedClient() {
         <article
           key={p.id}
           style={{
-            padding: 14,
-            borderRadius: 12,
+            padding: 10,
+            borderRadius: 14,
+            aspectRatio: "1 / 1",
+            width: "min(100%, 312px)",
+            overflow: "visible",
+            position: "relative",
+            display: "flex",
+            flexDirection: "column",
             background: theme.fill,
             border: p.locked ? "2px solid red" : `1px solid ${theme.border}`,
-            boxShadow: p.locked ? undefined : `0 0 16px ${theme.glow}`,
+            boxShadow: p.locked
+              ? undefined
+              : `0 0 0 1px ${theme.border} inset, 0 0 18px ${theme.glow}, 0 0 32px ${theme.glow}`,
             color: p.locked ? "red" : "inherit",
           }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
-            <div>
-              <strong>{p.pseudonym}</strong>{" "}
-              <span style={{ opacity: 0.9 }}>{p.hashtag}</span>{" "}
+          <div
+            style={{
+              position: "absolute",
+              top: -15,
+              left: "50%",
+              transform: "translateX(-50%)",
+              fontSize: 12,
+              fontWeight: 800,
+              letterSpacing: "0.07em",
+              textTransform: "uppercase",
+              color: "#ffffff",
+              background: "rgba(8, 10, 14, 0.96)",
+              border: `1px solid ${theme.border}`,
+              borderRadius: 10,
+              padding: "4px 10px",
+              width: "fit-content",
+              maxWidth: "calc(100% - 16px)",
+              whiteSpace: "nowrap",
+              boxShadow: `0 4px 0 rgba(0,0,0,0.35), 0 0 12px ${theme.glow}, 0 0 22px ${theme.glow}`,
+              textShadow: `0 0 8px ${theme.glow}, 0 0 14px ${theme.glow}`,
+              zIndex: 2,
+            }}
+          >
+            hashtag: {p.hashtag}
+          </div>
+
+          <div style={{ display: "grid", gap: 6, marginTop: 8, flex: 1 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "center" }}>
+              <strong style={{ fontSize: 20 }}>pseudo: {p.pseudonym}</strong>
+              {/* @ts-ignore */}
+              <LikeButton postId={p.id} likeCount={p.like_count} likedByMe={p.liked_by_me} />
+            </div>
+
+            <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
               <span
                 style={{
-                  marginLeft: 8,
-                  fontSize: 11,
+                  fontSize: 16,
                   padding: "2px 6px",
                   borderRadius: 999,
                   border: `1px solid ${theme.border}`,
                   color: theme.badge,
-                  opacity: 0.9,
+                  opacity: 0.95,
                 }}
               >
-                {themeLabels[p.theme] ?? p.theme}
+                theme: {themeLabels[p.theme] ?? p.theme}
               </span>
-              {p.locked && <span style={{ marginLeft: 10, fontWeight: 700 }}>🔒 LOCKED</span>}
-              {p.title ? <div style={{ marginTop: 6 }}>{p.title}</div> : null}
+              {p.locked && <span style={{ fontWeight: 700, fontSize: 14 }}>🔒 LOCKED</span>}
             </div>
 
-            {/* ⚠️ Ajuste si ton LikeButton n'a pas ces props */}
-            {/* @ts-ignore */}
-            <LikeButton postId={p.id} likeCount={p.like_count} likedByMe={p.liked_by_me} />
-          </div>
+            {p.title ? <div style={{ fontSize: 20, fontWeight: 700 }}>{p.title}</div> : null}
+            {p.caption ? <div style={{ opacity: 0.95, fontSize: 20 }}>{p.caption}</div> : null}
 
-          {p.caption ? <div style={{ marginTop: 10, opacity: 0.9 }}>{p.caption}</div> : null}
+            <div style={{ marginTop: 2 }}>
+              <UnlockPlayer postId={String(p.id)} locked={!!p.locked} />
+            </div>
 
-          <div style={{ marginTop: 12 }}>
-            <UnlockPlayer postId={String(p.id)} locked={!!p.locked} />
-          </div>
+            <div style={{ marginTop: 2, fontSize: 17, opacity: 0.9 }}>
+              ⏱ {p.audio_duration_seconds}s · 🎧 {p.listen_count} listen{p.listen_count > 1 ? "s" : ""}
+            </div>
 
-          <div style={{ marginTop: 10, fontSize: 12, opacity: 0.75 }}>
-            {p.audio_duration_seconds}s · {p.listen_count} listen{p.listen_count > 1 ? "s" : ""}
-          </div>
-
-          <div style={{ marginTop: 10, display: "flex", gap: 10, alignItems: "center" }}>
-            <a
-              href={`/new?replyTo=${encodeURIComponent(p.id)}`}
-              style={{
-                fontSize: 12,
-                padding: "4px 8px",
-                borderRadius: 8,
-                border: `1px solid ${theme.border}`,
-                color: theme.badge,
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-              }}
-            >
-              cmt
-            </a>
-            <button
-              type="button"
-              onClick={() =>
-                setOpenReplies((prev) => ({ ...prev, [p.id]: !prev[p.id] }))
-              }
-              style={{
-                fontSize: 12,
-                padding: "4px 8px",
-                borderRadius: 8,
-                border: "1px solid rgba(255,255,255,0.2)",
-                background: "transparent",
-                color: "white",
-                textTransform: "uppercase",
-                letterSpacing: "0.08em",
-                cursor: "pointer",
-              }}
-            >
-              see cmt ({replies.length})
-            </button>
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <a
+                href={`/new?replyTo=${encodeURIComponent(p.id)}`}
+                style={{
+                  fontSize: 17,
+                  padding: "5px 9px",
+                  borderRadius: 999,
+                  border: `1px solid ${theme.border}`,
+                  color: theme.badge,
+                  letterSpacing: "0.04em",
+                  background: "rgba(255,255,255,0.07)",
+                }}
+              >
+                💬 comment
+              </a>
+              <button
+                type="button"
+                onClick={() =>
+                  setOpenReplies((prev) => ({ ...prev, [p.id]: !prev[p.id] }))
+                }
+                style={{
+                  fontSize: 17,
+                  padding: "5px 9px",
+                  borderRadius: 999,
+                  border: "1px solid rgba(255,255,255,0.3)",
+                  background: "rgba(255,255,255,0.08)",
+                  color: "white",
+                  letterSpacing: "0.04em",
+                  cursor: "pointer",
+                }}
+              >
+                👀 comments ({replies.length})
+              </button>
+            </div>
           </div>
 
           {isOpen && replies.length > 0 && (
@@ -378,23 +411,23 @@ export default function FeedClient() {
                   <div
                     key={r.id}
                     style={{
-                      padding: 10,
-                      borderRadius: 10,
+                      padding: 8,
+                      borderRadius: 8,
                       background: rt.fill,
                       border: `1px solid ${rt.border}`,
-                      boxShadow: `0 0 10px ${rt.glow}`,
+                      boxShadow: `0 0 0 1px ${rt.border} inset, 0 0 10px ${rt.glow}`,
                     }}
                   >
-                    <div style={{ fontSize: 12, opacity: 0.9 }}>
-                      <strong>{r.pseudonym}</strong> <span>{r.hashtag}</span>
+                    <div style={{ fontSize: 14, opacity: 0.95 }}>
+                      <strong>pseudo: {r.pseudonym}</strong> <span>hashtag: {r.hashtag}</span>
                     </div>
-                    {r.title ? <div style={{ marginTop: 6 }}>{r.title}</div> : null}
-                    {r.caption ? <div style={{ marginTop: 6, opacity: 0.9 }}>{r.caption}</div> : null}
-                    <div style={{ marginTop: 8 }}>
+                    {r.title ? <div style={{ marginTop: 4, fontSize: 17 }}>{r.title}</div> : null}
+                    {r.caption ? <div style={{ marginTop: 4, opacity: 0.95, fontSize: 17 }}>{r.caption}</div> : null}
+                    <div style={{ marginTop: 6 }}>
                       <UnlockPlayer postId={String(r.id)} locked={!!r.locked} />
                     </div>
-                    <div style={{ marginTop: 6, fontSize: 11, opacity: 0.75 }}>
-                      {r.audio_duration_seconds}s · {r.listen_count} listen{r.listen_count > 1 ? "s" : ""}
+                    <div style={{ marginTop: 4, fontSize: 16, opacity: 0.9 }}>
+                      ⏱ {r.audio_duration_seconds}s · 🎧 {r.listen_count} listen{r.listen_count > 1 ? "s" : ""}
                     </div>
                   </div>
                 );
@@ -405,6 +438,7 @@ export default function FeedClient() {
           );
         })()
       ))}
+      </div>
     </div>
   );
 }

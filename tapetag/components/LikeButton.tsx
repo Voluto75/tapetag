@@ -6,13 +6,17 @@ export default function LikeButton({
   postId,
   initialCount,
   initialLiked,
+  likeCount,
+  likedByMe,
 }: {
   postId: string;
-  initialCount: number;
-  initialLiked: boolean;
+  initialCount?: number;
+  initialLiked?: boolean;
+  likeCount?: number;
+  likedByMe?: boolean;
 }) {
-  const [count, setCount] = useState(initialCount);
-  const [liked, setLiked] = useState(initialLiked);
+  const [count, setCount] = useState(initialCount ?? likeCount ?? 0);
+  const [liked, setLiked] = useState(initialLiked ?? likedByMe ?? false);
   const [loading, setLoading] = useState(false);
 
   async function toggle() {
@@ -41,19 +45,25 @@ export default function LikeButton({
   return (
     <button
       type="button"
-      className="tt-btn98 tt-like"
       onClick={toggle}
       aria-pressed={liked}
       style={{
         display: "inline-flex",
         alignItems: "center",
-        gap: 8,
+        justifyContent: "center",
         opacity: loading ? 0.7 : 1,
+        fontSize: 20,
+        lineHeight: 1,
+        color: "#ff2f4d",
+        background: "transparent",
+        border: "none",
+        padding: 0,
+        cursor: "pointer",
+        filter: "drop-shadow(0 0 10px rgba(255,47,77,0.7))",
       }}
+      aria-label={`Like (${count})`}
     >
-      <span style={{ color: liked ? "#FF2F92" : "#141414" }}>♥</span>
-      <span>{count}</span>
+      <span style={{ color: liked ? "#ff2f4d" : "#ff2f4d" }}>♥</span>
     </button>
   );
 }
-

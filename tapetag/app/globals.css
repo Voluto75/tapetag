@@ -297,8 +297,9 @@ body::after {
    Trending hashtags (LED frame)
    ========================= */
 .tt-trends {
-  margin: 14px 0 18px;
-  padding: 14px 16px 16px;
+  margin: 14px auto 18px;
+  padding: 8px 10px 10px;
+  width: min(360px, 92vw);
   border-radius: 12px;
   background:
     linear-gradient(180deg, rgba(14, 18, 12, 0.9), rgba(6, 8, 6, 0.95)),
@@ -315,7 +316,7 @@ body::after {
 .tt-trends::before {
   content: "";
   position: absolute;
-  inset: -8px;
+  inset: -6px;
   border-radius: 16px;
   border: 2px solid rgba(255, 120, 40, 0.75);
   box-shadow:
@@ -347,15 +348,15 @@ body::after {
   font-size: 12px;
   letter-spacing: 0.35em;
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   color: rgba(160, 255, 210, 0.85);
   text-shadow: 0 0 8px rgba(80, 255, 170, 0.45);
 }
 
 .tt-trends__grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 8px 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px 6px;
 }
 
 .tt-trends__item {
@@ -363,9 +364,9 @@ body::after {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  font-size: 12px;
-  padding: 6px 8px;
-  border-radius: 6px;
+  font-size: 10px;
+  padding: 5px 6px;
+  border-radius: 8px;
   background: rgba(6, 12, 8, 0.65);
   border: 1px solid rgba(120, 255, 190, 0.16);
   box-shadow: 0 0 10px rgba(80, 255, 160, 0.12);
@@ -377,7 +378,7 @@ body::after {
 }
 
 .tt-trends__count {
-  font-size: 11px;
+  font-size: 10px;
   opacity: 0.7;
   color: #7fffbf;
 }
@@ -396,21 +397,22 @@ body::after {
   justify-content: center;
   gap: 10px;
   padding: 18px 28px;
+  font-family: "Tahoma", "MS Sans Serif", "Verdana", system-ui, Arial;
   font-size: 22px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #0b0012;
-  background: linear-gradient(180deg, #ff71e3, #c56bff);
-  border: 2px solid #ffe2ff;
-  border-right-color: #5b1a7c;
-  border-bottom-color: #5b1a7c;
+  color: #ffffff;
+  background: linear-gradient(180deg, #48a6ff, #1e5fff);
+  border: 2px solid #dff1ff;
+  border-right-color: #10358f;
+  border-bottom-color: #10358f;
   border-radius: 12px;
   box-shadow:
     0 0 0 2px rgba(0,0,0,0.35),
-    0 12px 40px rgba(255, 110, 220, 0.85),
-    0 0 30px rgba(190, 90, 255, 0.95),
-    0 0 60px rgba(255, 80, 200, 0.9);
+    0 12px 40px rgba(70, 150, 255, 0.85),
+    0 0 30px rgba(50, 120, 255, 0.95),
+    0 0 60px rgba(40, 90, 255, 0.9);
   text-shadow: 0 1px 0 rgba(255,255,255,0.5);
   transition: transform 160ms ease, box-shadow 160ms ease, filter 160ms ease;
   animation: tt-cta-pulse 1.6s ease-in-out infinite, tt-cta-strobe 3s linear infinite;
@@ -420,9 +422,9 @@ body::after {
   transform: translateY(-1px) scale(1.03);
   box-shadow:
     0 0 0 2px rgba(0,0,0,0.35),
-    0 18px 46px rgba(255, 110, 220, 0.95),
-    0 0 36px rgba(190, 90, 255, 1),
-    0 0 70px rgba(255, 80, 200, 1);
+    0 18px 46px rgba(70, 150, 255, 0.95),
+    0 0 36px rgba(50, 120, 255, 1),
+    0 0 70px rgba(40, 90, 255, 1);
   filter: saturate(1.1);
 }
 
@@ -435,17 +437,17 @@ body::after {
     filter: saturate(1.05) brightness(1.0);
     box-shadow:
       0 0 0 2px rgba(0,0,0,0.35),
-      0 10px 36px rgba(255, 110, 220, 0.8),
-      0 0 26px rgba(190, 90, 255, 0.9),
-      0 0 52px rgba(255, 80, 200, 0.85);
+      0 10px 36px rgba(70, 150, 255, 0.8),
+      0 0 26px rgba(50, 120, 255, 0.9),
+      0 0 52px rgba(40, 90, 255, 0.85);
   }
   100% {
     filter: saturate(1.2) brightness(1.05);
     box-shadow:
       0 0 0 2px rgba(0,0,0,0.35),
-      0 16px 50px rgba(255, 110, 220, 1),
-      0 0 40px rgba(190, 90, 255, 1),
-      0 0 84px rgba(255, 80, 200, 1);
+      0 16px 50px rgba(70, 150, 255, 1),
+      0 0 40px rgba(50, 120, 255, 1),
+      0 0 84px rgba(40, 90, 255, 1);
   }
 }
 
@@ -518,9 +520,9 @@ body::after {
     filter: saturate(1.15) brightness(1.05);
     box-shadow:
       0 0 0 2px rgba(0,0,0,0.35),
-      0 12px 40px rgba(255, 110, 220, 0.85),
-      0 0 30px rgba(190, 90, 255, 0.95),
-      0 0 60px rgba(255, 80, 200, 0.9);
+      0 12px 40px rgba(70, 150, 255, 0.85),
+      0 0 30px rgba(50, 120, 255, 0.95),
+      0 0 60px rgba(40, 90, 255, 0.9);
   }
   94%, 95% {
     filter: saturate(1.0) brightness(1.8);
@@ -534,9 +536,9 @@ body::after {
     filter: saturate(1.2) brightness(1.1);
     box-shadow:
       0 0 0 2px rgba(0,0,0,0.35),
-      0 12px 40px rgba(255, 110, 220, 0.85),
-      0 0 30px rgba(190, 90, 255, 0.95),
-      0 0 60px rgba(255, 80, 200, 0.9);
+      0 12px 40px rgba(70, 150, 255, 0.85),
+      0 0 30px rgba(50, 120, 255, 0.95),
+      0 0 60px rgba(40, 90, 255, 0.9);
   }
   98%, 99% {
     filter: saturate(1.0) brightness(1.75);
@@ -550,9 +552,9 @@ body::after {
     filter: saturate(1.15) brightness(1.05);
     box-shadow:
       0 0 0 2px rgba(0,0,0,0.35),
-      0 12px 40px rgba(255, 110, 220, 0.85),
-      0 0 30px rgba(190, 90, 255, 0.95),
-      0 0 60px rgba(255, 80, 200, 0.9);
+      0 12px 40px rgba(70, 150, 255, 0.85),
+      0 0 30px rgba(50, 120, 255, 0.95),
+      0 0 60px rgba(40, 90, 255, 0.9);
   }
 }
 

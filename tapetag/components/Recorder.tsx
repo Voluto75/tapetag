@@ -230,7 +230,6 @@ export default function Recorder({ parentId }: { parentId?: string }) {
           <option value="informatique">Tech (black)</option>
           <option value="nature">Nature (off-white)</option>
         </select>
-        <input name="title" placeholder="Title (optional)" />
         <textarea name="caption" placeholder="Caption (optional)" />
         <input
         name="passcode"

@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       hashtag: form.get("hashtag"),
       theme: form.get("theme"),
       parent_id: form.get("parent_id") ?? "",
-      title: form.get("title"),
+      title: form.get("title") ?? "",
       caption: form.get("caption"),
       duration: form.get("duration"),
       passcode: form.get("passcode"), // ✅ nouveau

@@ -63,7 +63,15 @@ export default function UnlockPlayer({ postId, locked }: Props) {
             setSignedUrl(null);
             setErr("");
           }}
-          style={{ opacity: 0.85 }}
+          style={{
+            opacity: 0.9,
+            background: "rgba(20,20,24,0.7)",
+            color: "#eafff5",
+            border: "1px solid rgba(126,255,193,0.7)",
+            borderRadius: 8,
+            padding: "6px 8px",
+            boxShadow: "0 0 12px rgba(126,255,193,0.35)",
+          }}
         >
           Change / Re-unlock
         </button>
@@ -75,8 +83,22 @@ export default function UnlockPlayer({ postId, locked }: Props) {
   if (!locked) {
     return (
       <div style={{ display: "grid", gap: 8 }}>
-        <button type="button" onClick={() => requestSignedUrl("")} disabled={loading}>
-          {loading ? "Loading…" : "▶ Play"}
+        <button
+          type="button"
+          onClick={() => requestSignedUrl("")}
+          disabled={loading}
+          style={{
+            background: "linear-gradient(180deg, rgba(70,255,170,0.35), rgba(20,120,80,0.45))",
+            color: "#eafff5",
+            border: "1px solid rgba(126,255,193,0.9)",
+            borderRadius: 8,
+            padding: "7px 10px",
+            fontWeight: 700,
+            letterSpacing: "0.05em",
+            boxShadow: "0 0 14px rgba(126,255,193,0.5)",
+          }}
+        >
+          {loading ? "Loading…" : "▶ PLAY"}
         </button>
         {err && <div style={{ color: "crimson" }}>{err}</div>}
       </div>
@@ -100,6 +122,16 @@ export default function UnlockPlayer({ postId, locked }: Props) {
         type="button"
         onClick={() => requestSignedUrl(passcode)}
         disabled={loading || passcode.trim().length === 0}
+        style={{
+          background: "linear-gradient(180deg, rgba(70,255,170,0.35), rgba(20,120,80,0.45))",
+          color: "#eafff5",
+          border: "1px solid rgba(126,255,193,0.9)",
+          borderRadius: 8,
+          padding: "7px 10px",
+          fontWeight: 700,
+          letterSpacing: "0.05em",
+          boxShadow: "0 0 14px rgba(126,255,193,0.5)",
+        }}
       >
         {loading ? "Checking…" : "Unlock"}
       </button>

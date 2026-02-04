@@ -5,80 +5,68 @@ export const dynamic = "force-dynamic";
 export default function NewPostPage({ searchParams }: { searchParams?: { replyTo?: string } }) {
   const replyTo = searchParams?.replyTo;
   return (
-    <main className="tt-layout">
-      {/* LEFT AD */}
-      <aside className="tt-ad tt-ad--left">
-        <div className="tt-ad__inner">
-          <div className="tt-ad__bar">
-            <div className="tt-ad__title">Sponsored</div>
-            <div className="tt-ad__badge">Ad</div>
-          </div>
-          <div className="tt-ad__content">
-            <div className="tt-banner">
-              <img src="/ads/ad-left.jpg" alt="Neon city ad" />
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      {/* CENTER CONTENT */}
-      <div className="tt-main" style={{ padding: 24 }}>
-        <header
+    <main
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 50,
+        display: "grid",
+        placeItems: "center",
+        padding: 16,
+        background: "rgba(4,8,14,0.45)",
+        backdropFilter: "blur(10px)",
+      }}
+    >
+      <section
+        style={{
+          width: "min(760px, 96vw)",
+          maxHeight: "88vh",
+          overflow: "auto",
+          borderRadius: 16,
+          border: "1px solid rgba(140,190,255,0.5)",
+          background: "linear-gradient(180deg, rgba(7,11,18,0.96), rgba(5,8,12,0.94))",
+          boxShadow: "0 0 0 1px rgba(255,255,255,0.1) inset, 0 24px 70px rgba(0,0,0,0.6), 0 0 35px rgba(100,170,255,0.35)",
+          padding: 20,
+          position: "relative",
+        }}
+      >
+        <a
+          href="/"
+          aria-label="Close"
           style={{
-            position: "sticky",
-            top: 0,
-            zIndex: 20,
-            padding: "14px 18px",
-            background: "linear-gradient(to bottom, rgba(11,15,20,0.85), rgba(11,15,20,0))",
-            backdropFilter: "blur(6px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 12,
-            margin: "-24px -24px 18px",
+            position: "absolute",
+            top: 10,
+            right: 12,
+            width: 28,
+            height: 28,
+            borderRadius: 999,
+            display: "grid",
+            placeItems: "center",
+            textDecoration: "none",
+            color: "#ffffff",
+            border: "1px solid rgba(255,255,255,0.35)",
+            background: "rgba(255,255,255,0.1)",
+            fontWeight: 700,
           }}
         >
-          <span className="tt-appname">
-            TapeTag
-            <span style={{ marginLeft: 8, fontSize: "0.25em", opacity: 0.75 }}>raw</span>
-          </span>
+          ×
+        </a>
 
-          <a className="tt-newbtn" href="/">← HOME</a>
-        </header>
-
-        <h1 style={{ fontSize: 28, marginBottom: 4 }}>
-          New voice post
-        </h1>
-
+        <h1 style={{ fontSize: 28, marginBottom: 4 }}>New voice post</h1>
         <p
           style={{
             marginBottom: 20,
-            fontFamily: "GAU Cube, system-ui",
+            fontFamily: "GAU Font Cube, monospace",
             letterSpacing: "0.06em",
             color: "#C6A7FF",
             opacity: 0.9,
           }}
         >
-          Keep it anonymous — or don’t. Feel free.
+          Keep it anonymous — or don't. Feel free.
         </p>
 
         <Recorder parentId={replyTo} />
-      </div>
-
-      {/* RIGHT AD */}
-      <aside className="tt-ad tt-ad--right">
-        <div className="tt-ad__inner">
-          <div className="tt-ad__bar">
-            <div className="tt-ad__title">Sponsored</div>
-            <div className="tt-ad__badge">Ad</div>
-          </div>
-          <div className="tt-ad__content">
-            <div className="tt-banner">
-              <img src="/ads/ad-right.jpg" alt="Neon tech ad" />
-            </div>
-          </div>
-        </div>
-      </aside>
+      </section>
     </main>
   );
 }

@@ -25,7 +25,7 @@ export async function GET() {
     const items = Array.from(counts.entries())
       .map(([hashtag, count]) => ({ hashtag, count }))
       .sort((a, b) => b.count - a.count)
-      .slice(0, 40);
+      .slice(0, 3);
 
     return NextResponse.json({ items }, { headers: { "Cache-Control": "no-store" } });
   } catch (e: any) {

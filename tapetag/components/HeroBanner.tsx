@@ -1,12 +1,14 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useEffect, useMemo, useState } from "react";
 
 type Props = {
   text: string;
+  children?: ReactNode;
 };
 
-export default function HeroBanner({ text }: Props) {
+export default function HeroBanner({ text, children }: Props) {
   const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
@@ -29,7 +31,7 @@ export default function HeroBanner({ text }: Props) {
   return (
     <section
       style={{
-        height: "50vh",
+        height: "12.5vh",
         width: "100%",
         display: "flex",
         alignItems: "center",
@@ -41,8 +43,9 @@ export default function HeroBanner({ text }: Props) {
       }}
     >
       <div style={styles}>
-        <h2 className="tt-hero__text">{text}</h2>
+        {text ? <h2 className="tt-hero__text">{text}</h2> : null}
       </div>
+      {children ? <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center" }}>{children}</div> : null}
     </section>
   );
 }
