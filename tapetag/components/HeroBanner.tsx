@@ -31,13 +31,14 @@ export default function HeroBanner({ text, children }: Props) {
   return (
     <section
       style={{
-        height: "12.5vh",
+        height: "clamp(150px, 24vh, 240px)",
         width: "100%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         position: "relative",
-        overflow: "hidden",
+        overflow: "visible",
+        marginBottom: 10,
         background:
           "linear-gradient(to bottom, rgba(3,10,6,0.9), rgba(0,0,0,1)), repeating-linear-gradient(90deg, rgba(40,255,140,0.18) 0 6px, rgba(0,0,0,0) 6px 12px), repeating-linear-gradient(180deg, rgba(40,255,140,0.14) 0 6px, rgba(0,0,0,0) 6px 12px)",
       }}
