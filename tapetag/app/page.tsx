@@ -63,17 +63,19 @@ export default async function Home() {
           <div style={{ display: "grid", gap: 20, justifyItems: "center", width: "100%", textAlign: "center" }}>
             <span
               style={{
-                fontSize: "clamp(10px, 3.2vw, 22px)",
+                fontSize: "clamp(14px, 4.5vw, 31px)",
                 lineHeight: 1,
                 margin: 0,
                 fontFamily: "\"Tahoma\", \"MS Sans Serif\", \"Verdana\", system-ui, Arial",
-                fontWeight: 400,
-                color: "#ffffff",
-                textShadow: "none",
+                fontWeight: 600,
+                color: "#4fb2ff",
+                textShadow:
+                  "0 0 10px rgba(79,178,255,0.95), 0 0 24px rgba(58,150,255,0.95), 0 0 42px rgba(35,110,255,0.95)",
+                WebkitTextStroke: "1px rgba(255,255,255,0.95)",
                 letterSpacing: "0.03em",
               }}
             >
-              Drop opinions, gossips, secret message with lock...
+              Drop gossips or secret message with lock.
             </span>
             <a className="tt-newbtn--hero" href="/new">+ NEW TAPE</a>
           </div>
