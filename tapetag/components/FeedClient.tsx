@@ -544,20 +544,25 @@ export default function FeedClient() {
               ⏱ {p.audio_duration_seconds}s · 🎧 {p.listen_count} listen{p.listen_count > 1 ? "s" : ""}
             </div>
             <div style={{ fontSize: 10, opacity: 0.72 }}>
-              🗓 {new Date(p.created_at).toLocaleDateString()} · {new Date(p.created_at).toLocaleTimeString()}
+              {new Date(p.created_at).toLocaleDateString()} · {new Date(p.created_at).toLocaleTimeString()}
             </div>
 
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               <a
                 href={`/new?replyTo=${encodeURIComponent(p.id)}`}
                 style={{
-                  fontSize: 17,
-                  padding: "5px 9px",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  padding: "6px 12px",
                   borderRadius: 999,
-                  border: `1px solid ${theme.border}`,
-                  color: theme.badge,
+                  border: "1px solid rgba(255,255,255,0.24)",
+                  color: "#f7fbff",
                   letterSpacing: "0.04em",
-                  background: "rgba(255,255,255,0.07)",
+                  textTransform: "none",
+                  textDecoration: "none",
+                  background: "linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04))",
+                  boxShadow: "0 1px 0 rgba(255,255,255,0.15) inset, 0 8px 18px rgba(0,0,0,0.25)",
+                  backdropFilter: "blur(4px)",
                 }}
               >
                 💬 comment
@@ -568,14 +573,17 @@ export default function FeedClient() {
                   setOpenReplies((prev) => ({ ...prev, [p.id]: !prev[p.id] }))
                 }
                 style={{
-                  fontSize: 17,
-                  padding: "5px 9px",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  padding: "6px 12px",
                   borderRadius: 999,
-                  border: "1px solid rgba(255,255,255,0.3)",
-                  background: "rgba(255,255,255,0.08)",
-                  color: "white",
+                  border: "1px solid rgba(255,255,255,0.24)",
+                  background: "linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04))",
+                  color: "#f7fbff",
                   letterSpacing: "0.04em",
                   cursor: "pointer",
+                  boxShadow: "0 1px 0 rgba(255,255,255,0.15) inset, 0 8px 18px rgba(0,0,0,0.25)",
+                  backdropFilter: "blur(4px)",
                 }}
               >
                 👀 comments ({replies.length})
@@ -610,7 +618,7 @@ export default function FeedClient() {
                       ⏱ {r.audio_duration_seconds}s · 🎧 {r.listen_count} listen{r.listen_count > 1 ? "s" : ""}
                     </div>
                     <div style={{ fontSize: 9, opacity: 0.7 }}>
-                      🗓 {new Date(r.created_at).toLocaleDateString()} · {new Date(r.created_at).toLocaleTimeString()}
+                      {new Date(r.created_at).toLocaleDateString()} · {new Date(r.created_at).toLocaleTimeString()}
                     </div>
                   </div>
                 );
