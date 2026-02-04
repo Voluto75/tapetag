@@ -368,7 +368,8 @@ export default function Recorder({ parentId, forcedTag }: { parentId?: string; f
           onChange={(e) => setHashtagValue(e.target.value)}
           readOnly={!!effectiveTag}
         />
-        <select name="theme" defaultValue="politique" required>
+        <select name="theme" defaultValue="no-theme" required>
+          <option value="no-theme">No theme</option>
           <option value="politique">Politics (light blue)</option>
           <option value="foot">Foot (green)</option>
           <option value="sex">Sex (pink)</option>
@@ -389,7 +390,7 @@ export default function Recorder({ parentId, forcedTag }: { parentId?: string; f
         <textarea name="caption" placeholder="Caption (optional)" />
         <input
         name="passcode"
-        placeholder="Passcode (optional)"
+        placeholder="Create passcode (optional)"
         autoComplete="new-password"
         />
 

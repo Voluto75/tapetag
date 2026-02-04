@@ -7,6 +7,7 @@ const schema = z.object({
   pseudonym: z.string().min(1).max(40),
   hashtag: z.string().min(1).max(40),
   theme: z.enum([
+    "no-theme",
     "politique",
     "foot",
     "sex",
