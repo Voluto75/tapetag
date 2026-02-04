@@ -54,21 +54,44 @@ export default function UnlockPlayer({ postId, locked }: Props) {
     }
   }
 
+  async function tryAutoplay() {
+    const a = audioRef.current;
+    if (!a || !autoplayRequested) return;
+    try {
+      await a.play();
+      setAutoplayRequested(false);
+    } catch {
+      // Keep request flag true so we can retry on canplay/loadeddata.
+    }
+  }
+
   useEffect(() => {
     if (!signedUrl || !autoplayRequested) return;
-    const a = audioRef.current;
-    if (!a) return;
-    a.play().catch(() => {
-      // Some browsers can still block autoplay; controls remain available.
-    });
-    setAutoplayRequested(false);
+    tryAutoplay();
   }, [signedUrl, autoplayRequested]);
 
   // Déjà déverrouillé -> on joue l’audio
   if (signedUrl) {
     return (
       <div style={{ display: "grid", gap: 8 }}>
-        <audio ref={audioRef} controls autoPlay playsInline src={signedUrl} />
+        <audio
+          ref={audioRef}
+          controls
+          autoPlay
+          playsInline
+          preload="auto"
+          src={signedUrl}
+          onCanPlay={() => {
+            if (autoplayRequested) {
+              tryAutoplay();
+            }
+          }}
+          onLoadedData={() => {
+            if (autoplayRequested) {
+              tryAutoplay();
+            }
+          }}
+        />
         <button
           type="button"
           onClick={() => {
