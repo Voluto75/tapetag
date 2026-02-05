@@ -52,7 +52,10 @@ export default async function Home() {
       textShadow: "none",
     }}
   >
-    TAPETAG <span style={{ fontSize: "0.6em" }}>raw</span>
+    <span style={{ display: "inline-flex", alignItems: "baseline", gap: 6 }}>
+      <span>TAPETAG</span>
+      <span style={{ fontSize: "0.6em" }}>raw</span>
+    </span>
   </span>
 
   <span />
